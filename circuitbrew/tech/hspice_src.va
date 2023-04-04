@@ -1,0 +1,71 @@
+
+`define MAX_INPUTS 20000
+`define MAX_STRING 1000
+
+`include "constants.h"
+`include "discipline.h"
+
+
+module ${MODULE_NAME}(clk, _reset, d);
+    input clk;
+    input _reset;
+    output d;
+    voltage clk, d;
+
+
+    parameter real vhi = ${voltage};
+    parameter real vlo = 0.0;
+	parameter real trise = 20p;
+	parameter real tfall = 20p;
+	parameter string FILE = "test.dat";
+    parameter integer N=${nvalues};
+    <% 
+    ASSIGN_STRING = ','.join([str(val) for val in reversed(values)])
+    %>
+    parameter integer values[N-1:0] = { ${ASSIGN_STRING} };
+
+    integer i, fd, nvalues, valid;  // Current cycle
+    integer cvalue;
+    //integer values[0:`MAX_INPUTS];
+    real vd;
+    analog begin
+        /*
+        @(initial_step) begin
+            $display ("Reading file %s", FILE);
+            fd = $fopen(FILE, "r");
+            if (fd == 0) begin
+                $display ("uh oh, can't open file!!!");
+                $finish;
+            end
+            i = 0;
+            while (!$feof(fd)) begin
+                valid = $fscanf (fd,"%d",values[i]);
+                //$display ("Test value[%d] = %d",i,values[i]);
+                i = i+1;
+            end
+            nvalues = i;
+            $display ("Number of test values to read: %d\n",nvalues);
+            i = 0;
+            cvalue = 0;
+            $fclose(fd);
+        end
+        */
+
+        @(initial_step) begin
+            cvalue = 0;
+        end
+        @(cross(V(clk)-vhi/2, +1)) begin
+            if (V(_reset) > vhi/2) begin
+                if (cvalue == N) cvalue = 0;
+                if (values[cvalue] == 0) begin
+                    vd = vlo;
+                end
+                else begin
+                    vd = vhi;
+                end
+                cvalue = cvalue + 1;
+            end
+        end
+        V(d) <+ transition(vd, 0, trise, tfall);
+    end
+endmodule

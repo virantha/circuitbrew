@@ -1,0 +1,34 @@
+
+`define MAX_INPUTS 20000
+`define MAX_STRING 1000
+
+`include "constants.h"
+`include "discipline.h"
+
+module ${MODULE_NAME}(en, clk);
+    input en;
+    output clk;
+    voltage clk;
+
+
+    parameter real vhi = ${voltage};
+    parameter real vlo = 0.0;
+	parameter real trise = 20p;
+	parameter real tfall = 20p;
+    parameter real freq = 1000;  // KHz
+    parameter real offset = 0;
+
+    parameter real period = 1.0/(freq*1e3);
+
+    real vclk;
+
+    analog begin
+        @(timer(offset, period)) begin
+            vclk = vlo;
+        end
+        @(timer(offset+period/2, period)) begin
+            vclk = vhi;
+        end
+        V(clk) <+ transition(vclk, 0, trise, tfall);
+    end
+endmodule

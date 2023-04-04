@@ -13,7 +13,7 @@ Make sure to install all the dev packages in your local environment::
        cd docs
        make html
    
-  Docs by default are built in `../../githubdocs/bricknil`, but you can change this in 
+  Docs by default are built in `../../githubdocs/circuitbrew`, but you can change this in 
   `docs/Makefile`.
 
 * **Deploying documentation**: Documentation is hosted on github pages.  We use fabric (see `tasks.py`) for deploying::
