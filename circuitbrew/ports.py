@@ -17,6 +17,9 @@ class Port(WithId):
         logger.debug(f'__init__ ({name}): id = {self.count}')
         self._negated = None
 
+    # ----------------------------------------------------------------
+    # Simulation related methods
+    # ----------------------------------------------------------------
     async def recv(self):
         q = self._q
         tok = await q.get()
@@ -36,6 +39,10 @@ class Port(WithId):
             val = await self.recv()
             await self.send(val)
 
+    # ----------------------------------------------------------------
+    # Transistor stack creation using bit-wise operators
+    #   e.g. port_a & port_b yields a series n-fet stack 
+    # ----------------------------------------------------------------
     def __invert__(self):
         #assert not self._negated, 'Can only negate a port once'
         self._negated = True
@@ -65,6 +72,7 @@ class Port(WithId):
             stack.add_parallel_fet(other)
             stack.add_parallel_fet(self)
             return stack
+
     def __set_name__(self, cls, name):
         logger.debug(f'{self.__class__}: setting name to {name} for port id {self.count}')
         self.name = name

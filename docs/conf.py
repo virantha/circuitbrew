@@ -21,13 +21,14 @@ import sys
 import pkg_resources
 sys.path.insert(0, os.path.abspath('.'))
 
-import sphinx_readable_theme
+#import sphinx_readable_theme
+import sphinx_book_theme
 from circuitbrew.version import __version__
 
 # -- Project information -----------------------------------------------------
 
 project = 'CircuitBrew'
-copyright = '2019, Virantha N. Ekanayake'
+copyright = '2023, Virantha N. Ekanayake'
 author = 'Virantha N. Ekanayake'
 
 # The short X.Y version
@@ -122,8 +123,9 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme_path = [sphinx_readable_theme.get_html_theme_path()]
-html_theme = 'readable'
+html_theme_path = [sphinx_book_theme.get_html_theme_path()]
+#html_theme = 'readable'
+html_theme = 'sphinx_book_theme'
 #html_theme = 'sphinxdoc'
 #html_theme = 'sphinx_rtd_theme'
 

@@ -5,33 +5,41 @@ from globals import SupplyPort
 from module import Leaf, Module, ParametrizedModule, SourceModule
 from mako.lookup import TemplateLookup
 import curio
+from measure import Power
 
 logger = logging.getLogger(__name__)
 
 class VoltageSource(Leaf):
     node = Port()
 
-    def __init__(self, name, voltage):
+    def __init__(self, name, voltage, measure=False):
         super().__init__(name=name)
         self.voltage = voltage
+        self.measure = measure
 
     def get_instance_spice(self, scope):
         connected = ' '.join(self._get_instance_ports(scope))
-        s = f'V{self.name} {connected} 0 {self.voltage}'
-        return s
+        s = []
+        s.append(f'V{self.name} {connected} 0 {self.voltage}')
+        return '\n'.join(s)
 
 class Supply(Module):
     p = SupplyPort()
 
-    def __init__(self, name, voltage, **kwargs):
+    def __init__(self, name, voltage, measure=None, **kwargs):
         super().__init__(name=name, **kwargs)
         self.voltage = voltage
+        self.measure = measure
 
     def build(self):
         self.vsupply =  VoltageSource(f'{self.name}_vdd', self.voltage)
         self.p.vdd = self.vsupply.node
         self.vgnd =  VoltageSource(f'{self.name}_vss', 0.0)
         self.p.gnd = self.vgnd.node
+
+        if self.measure:
+            self.msr_power = Power(voltage_source=self.vsupply)
+
         self.finalize()
 
 

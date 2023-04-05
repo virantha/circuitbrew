@@ -5,6 +5,7 @@ docopt-ng
 restview
 sphinx
 sphinx-readable-theme
+sphinx-book-theme
 setuptools
 wheel
 twine

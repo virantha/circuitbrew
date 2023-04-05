@@ -4,7 +4,7 @@ from ports import *
 from globals import SupplyPort
 from elements import Supply, VerilogClock, VerilogSrc, VerilogBucket
 from fets import *
-from measure import Freq
+from measure import Freq, Power
 
 class Inv(Module):
     inp = InputPort()
@@ -51,7 +51,8 @@ class Buf(Module):
 class Main(Module):
 
     def build(self):
-        self.supply = Supply('vdd', self.sim_setup['voltage'], )
+        self.supply = Supply('vdd', self.sim_setup['voltage'], 
+                             measure=True )
         self.p = self.supply.p
         p = self.supply.p
 
@@ -70,5 +71,5 @@ class Main(Module):
         #self.src2 = VerilogSrc('src2', [randint(0,1) for i in range(10)])
 
         self.bucket = VerilogBucket(name='buc', clk=clk2, _reset=p.vdd, d=self.buf.b)
-        self.msr_freq = Freq(node=self.buf.b)
+        self.msr_freq = Freq(node=self.buf.b, first_transition=4, second_transition=5)
         self.finalize()
