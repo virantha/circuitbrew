@@ -73,17 +73,13 @@ class Port(WithId):
             stack.add_parallel_fet(self)
             return stack
 
+    # ----------------------------------------------------------------
+    # Decorator protocol to allow these to be used in Module classes
+    # as instance variables ("block ports") 
+    # ----------------------------------------------------------------
     def __set_name__(self, cls, name):
         logger.debug(f'{self.__class__}: setting name to {name} for port id {self.count}')
         self.name = name
-
-    def _get_or_create_port(self, instance):
-        if (port := instance.__dict__.get(self.name)):
-            return port
-        else:
-            port = type(self)(name=self.name, count=self.count)
-            instance.__dict__[self.name] = port
-            return port
 
     def __get__(self, instance, cls):
         return self._get_or_create_port(instance)
@@ -94,6 +90,14 @@ class Port(WithId):
         port = self._get_or_create_port(instance)
         port._set(value)
 
+
+    def _get_or_create_port(self, instance):
+        if (port := instance.__dict__.get(self.name)):
+            return port
+        else:
+            port = type(self)(name=self.name, count=self.count)
+            instance.__dict__[self.name] = port
+            return port
 
     def _set(self, value):
         assert isinstance(value, Port), f'Trying to set {self} to non-port type {type(value)}'
@@ -138,6 +142,7 @@ class Port(WithId):
 
     def is_flat(self):
         return True
+
 
 class Wire(Port):
     pass

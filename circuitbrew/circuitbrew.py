@@ -21,16 +21,19 @@ Options:
 
 """
 import sys, logging
-import mako, curio
+import curio
 from docopt import docopt
 from mako.template import Template
-from mako.lookup import TemplateLookup
-from importlib import import_module
+from importlib import import_module 
+import importlib.resources as pkg_resources
+
 import os
 from walker import BuildPass, NetlistPass, SimPass
 from module import Module
 
 from version import __version__ 
+
+import tech
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +55,9 @@ class CircuitBrew:
                     }
 
     def netlist(self):
-        mylookup = TemplateLookup(directories=['tech'])
-        mytemplate = mylookup.get_template(self.techfile)
+        #template_str = pkg_resources.read_text(tech, self.techfile)
+        template_str = pkg_resources.files(tech).joinpath(self.techfile).read_text()
+        mytemplate = Template(template_str)
 
         circuit_lib = import_module(self.module)
 
@@ -86,6 +90,7 @@ class CircuitBrew:
 
         with open(os.path.join(sim_setup['output_dir'], 'top.'+self.file_extension[self.netlist_type]), 'w') as f:
             f.write(spice)
+        return spice
 
     def get_options(self, argv):
         """
@@ -154,7 +159,8 @@ class CircuitBrew:
 
 def main():
     script = CircuitBrew()
-    script.go(sys.argv[1:])
+    script.go(['n7.sp', 'examples.simple3', 'hspice', 'all'])
+    #script.go(sys.argv[1:])
 
 if __name__=='__main__':
     main()

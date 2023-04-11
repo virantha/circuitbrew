@@ -1,10 +1,11 @@
 
+import curio
 import inspect
 from collections import Counter
-from symbols import SymbolTable
 import logging
+
 from ports import Port, InputPort
-import curio
+from symbols import SymbolTable
 from stack import Stack
 
 logger = logging.getLogger(__name__)

@@ -104,7 +104,3 @@ class CompoundPort(Port):
 class SupplyPort(CompoundPort):
     vdd = Port()
     gnd = Port()
-
-class ComplexPort(CompoundPort):
-    p = SupplyPort()
-    d = InputPorts(width=10)

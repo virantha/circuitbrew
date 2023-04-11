@@ -1,11 +1,16 @@
 import os, logging
 from random import randint
+
+import curio
+from measure import Power
 from ports import *
 from globals import SupplyPort
 from module import Leaf, Module, ParametrizedModule, SourceModule
-from mako.lookup import TemplateLookup
-import curio
-from measure import Power
+
+# The template files
+from mako.template import Template
+import importlib.resources as pkg_resources
+import tech
 
 logger = logging.getLogger(__name__)
 
@@ -45,13 +50,11 @@ class Supply(Module):
 
 class VerilogModule(Module):
 
-    template_lookup = TemplateLookup(directories=['tech'])
-
     def build(self):
         self.finalize()
 
     def _emit_src_file(self, src_filename, param_dict={}, out_filename=None):
-        mytemplate = self.template_lookup.get_template(src_filename)
+        mytemplate = Template(pkg_resources.files(tech).joinpath(src_filename).read_text())
 
         srcfile = mytemplate.render(**param_dict, **self.sim_setup)
 

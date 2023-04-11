@@ -1,6 +1,7 @@
 import logging
-from module import Module, Leaf, SourceModule
 from curio import spawn
+
+from module import Module, Leaf, SourceModule
 from helpers import LogBlock
 logger = logging.getLogger(__name__)
 
@@ -41,11 +42,12 @@ class NetlistPass(Walker):
     def run(self):
         cls_name = self.target.get_module_type_name()
         LogBlock(f'Netlist pass {cls_name}')
-        #logger.debug(cls_name)
         if cls_name not in Module._modules and not isinstance(self.target, Leaf):
+            # Call the fast symbol table lookup constructor
+            self.target._sym_table._setup_connections_lookup()
             Module._modules[cls_name] = self.target.get_spice()
             logger.debug(f'Got spice for {cls_name}')
-            logger.debug(self.target.get_spice())
+            logger.debug(Module._modules[cls_name])
             logger.debug(self.target._sym_table.ports)
         else:  
             pass
