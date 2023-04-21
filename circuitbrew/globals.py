@@ -1,5 +1,5 @@
-from symbols import SymbolTable
-from ports import *
+from .symbols import SymbolTable
+from .ports import *
 
 class CompoundPort(Port):
 
@@ -28,7 +28,7 @@ class CompoundPort(Port):
     def __set__(self, instance, value):
         # This gets called when we try to assign one compound port to another
         # We need to make sure the fields match up
-        assert isinstance(value, type(self))
+        #assert isinstance(value, type(self)), f'Trying to connect two compound ports of types {type(value)} and {type(self)}'
         port = self._insert_into_instance(instance)
 
         # Create a new CompoundPort object (not a descriptor) to store it into the instance
@@ -95,6 +95,10 @@ class CompoundPort(Port):
             port_dict = port_dict | subport_dict
         return port_dict
         
+    def iter_flattened(self):
+        for port in self.sym_table.get_ports().values():
+            yield from port.iter_flattened()
+
     def is_flat(self): 
         return False
             

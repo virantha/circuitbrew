@@ -28,12 +28,12 @@ from importlib import import_module
 import importlib.resources as pkg_resources
 
 import os
-from walker import BuildPass, NetlistPass, SimPass
-from module import Module
+from .walker import BuildPass, NetlistPass, SimPass
+from .module import Module
 
-from version import __version__ 
+from .version import __version__ 
 
-import tech
+import circuitbrew.tech as tech
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +74,10 @@ class CircuitBrew:
         #sim_setup['circuit'] = main.get_netlist('xmain')
         walker = BuildPass(main, 'xmain')
         walker.run()
-        walker = SimPass(main, 'xmain')
-        curio.run(walker.run_sim, with_monitor=True)
+        
+        if 'sim' in self.flow:
+            walker = SimPass(main, 'xmain')
+            curio.run(walker.run_sim, with_monitor=True)
 
         walker = NetlistPass(main, 'xmain')
         walker.run()
@@ -159,8 +161,8 @@ class CircuitBrew:
 
 def main():
     script = CircuitBrew()
-    script.go(['n7.sp', 'examples.simple3', 'hspice', 'all'])
-    #script.go(sys.argv[1:])
+    #script.go(['n7.sp', 'examples.simple3', 'hspice', 'all'])
+    script.go(sys.argv[1:])
 
 if __name__=='__main__':
     main()

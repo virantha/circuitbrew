@@ -1,0 +1,72 @@
+`define MAX_INPUTS 20000
+
+`include "constants.h"
+`include "discipline.h"
+
+module ${MODULE_NAME}(_pReset, _sReset, lt,lf,le);
+	input _pReset,_sReset, le;
+	output lt,lf;
+	voltage _pReset,_sReset,lt,lf,le;
+
+	parameter real trise = 20p;
+	parameter real tfall = 20p;
+	parameter real vhigh = ${voltage};
+	parameter real vlow = 0.0;
+	real vlt, vlf;
+
+    parameter integer N=${nvalues};
+    <% 
+    ASSIGN_STRING = ','.join([str(val) for val in reversed(values)])
+    %>
+    parameter integer values[N-1:0] = { ${ASSIGN_STRING} };
+
+	// File stuff
+	integer fd, nvalues, i, cvalue;
+	integer valid;
+	//integer values[0:`MAX_INPUTS];
+	analog begin
+		@(initial_step) begin
+			vlt = vlow;
+			vlf = vlow;
+            cvalue = 0;
+		end
+		@(cross(V(_pReset)-vhigh/2,+1)) begin
+			vlt = vlow;
+			vlf = vlow;
+		end
+		@(cross(V(le)-vhigh/2,+1)) begin
+			if (cvalue == N) cvalue = 0;
+			if (values[cvalue] == 0) begin
+				vlf = vhigh;
+				$display ("At time %5.2f ns sourced %dth value of 0 to %s", $abstime()*1e9, cvalue, "input");
+			end
+			if (values[cvalue] == 1) begin 
+				vlt = vhigh;
+				$display ("At time %5.2f ns sourced %dth value of 1 to %s", $abstime()*1e9, cvalue, "input");
+			end
+			cvalue = cvalue + 1;
+		end
+		@(cross(V(_sReset)-vhigh/2,+1)) begin
+			if (V(le) > vhigh/2) begin
+				if (values[cvalue] == 0) begin
+					vlf = vhigh;
+					$display ("At time %5.2f ns sourced %dth value of 0 to %s", $abstime()*1e9, cvalue, "input");
+				end
+				if (values[cvalue] == 1) begin 
+					vlt = vhigh;
+					$display ("At time %5.2f ns sourced %dth value of 1 to %s", $abstime()*1e9, cvalue, "input");
+				end
+
+				cvalue = cvalue + 1;
+			end
+		end
+
+        // Neutrality, reset data rails
+		@(cross(V(le)-vhigh/2,-1)) begin
+			vlt = vlow;
+			vlf = vlow;
+		end
+		V(lt) <+ transition (vlt, 0, trise, tfall);
+		V(lf) <+ transition (vlf , 0, trise, tfall);
+	end
+endmodule

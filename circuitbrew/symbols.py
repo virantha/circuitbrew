@@ -1,11 +1,30 @@
 import inspect, logging
-from ports import Port, Ports
+from .ports import Port, Ports
 from collections import defaultdict
-from helpers import LogBlock
+from .helpers import LogBlock
 
 logger = logging.getLogger(__name__)
 class Symbol:
+    """
+        A class representing a symbol with hierarchical naming.
+
+        :param name: The name of the symbol.
+        :type name: str
+        :param port: The port number associated with the symbol.
+        :type port: int
+        :param hierarchy: The parent symbol in the hierarchy, defaults to None.
+        :type hierarchy: Symbol, optional
+    """
     def __init__(self, name, port, hierarchy=None):
+        """
+        Generate the hierarchical name of the symbol by recursively concatenating
+        parent names in the hierarchy, separated by the specified separator.
+
+        :param separator: The separator to use between hierarchical names, defaults to '.'.
+        :type separator: str, optional
+        :return: The hierarchical name of the symbol.
+        :rtype: str
+        """
         self.name = name
         self.port = port
         self.hierarchy = hierarchy
@@ -81,19 +100,6 @@ class SymbolTable:
         for port_name, port in self.get_ports().items():
             self._get_set_of_connections(port, port_name, self.connected['ports'])
 
-        # Now, go through all the sub ports and add those in 
-        # for sub_inst_name, sub_port_dict in self.sub_instance_ports.items():
-        #     logger.debug(f'Adding sub_inst {sub_inst_name}')
-        #     for sub_port_name, sub_port in sub_port_dict.items():
-        #         parent_scope_name = '' if sub_port.is_flat() else sub_port_name
-        #         for atomic_port_name, atomic_port in sub_port.get_flattened(parent_scope_name).items():
-        #             tmp_var = Port(f'{atomic_port_name}_{self.tmp_id}')
-        #             tmp_var._set(atomic_port) # Connect tmp vvar to subport
-        #             logger.debug(f'\t adding sub_port {atomic_port_name} as {tmp_var.name}')
-        #             for conn in atomic_port.connections:
-        #                 tmp_var._set(conn)
-        #             self.add_local(tmp_var.name, tmp_var)
-        #             self.tmp_id+=1
 
         for local_name, port in self.locals.items():
             sym = Symbol(local_name, port)
@@ -102,8 +108,6 @@ class SymbolTable:
             # Add in all connections
             for connected_port in port.connections:
                 self.connected['locals'][connected_port].add(sym)
-
-
 
         logger.debug('fast ports table:')
         for port, connected_set in self.connected['ports'].items():
@@ -210,6 +214,9 @@ xmp0 p.vdd a b UNC pch_svt_mac nfin=2 l=0.008u
             return sym.name, sym.port
         else:
             # More complicated case to search in sub_instance ports in this module
+            # This is slow the first time each port is encountered, but subsequent references
+            # can pull up the symbol directly from the locals (since create a new local alias
+            # to refer to the subport)
             sym = self.get_connected_symbol(port, self.sub_instance_ports)
             if (sym):
                 # Need to create a temp var here to access the sub port
@@ -226,13 +233,10 @@ xmp0 p.vdd a b UNC pch_svt_mac nfin=2 l=0.008u
                 for connected_port in port.connections:
                     self.connected['locals'][connected_port].add(sym)
 
-
                 #self._get_set_of_connections(tmp_var, tmp_var.name, self.connected['locals'])
-
                 logger.debug(f'\t\tCreated new local {tmp_var.name}={tmp_var} for {port.name}, {port}')
                 self.tmp_id+=1
                 return tmp_var.name, tmp_var
-                #return sym.name, sym.port
             else:
                 return None
 
@@ -245,9 +249,6 @@ xmp0 p.vdd a b UNC pch_svt_mac nfin=2 l=0.008u
             return min(search_set)
         else:
             return None
-
-
-
 
     def get_connected_symbol(self, port, lookup_dict):
         """ Problem here is that a port may have multiple names(aliases) assorted with it
@@ -269,8 +270,11 @@ xmp0 p.vdd a b UNC pch_svt_mac nfin=2 l=0.008u
                 # Collection of sub_instance ports
                 logger.debug('found dict')
                 for sub_port_name, sub_port in p.items():
-                    if port == sub_port or sub_port in port.connections:
-                        return Symbol(f'{sub_port_name}', sub_port, hierarchy=p_name)
+                    # Need to flatten each sub_port to check if this port is in this subinstance ports
+                    for flattened in sub_port.iter_flattened():
+                        logger.debug(f'\t\tChecking {port} against {flattened}')
+                        if port == flattened or flattened in port.connections:
+                            return Symbol(f'{sub_port_name}', sub_port, hierarchy=p_name)
             elif p.is_flat():
                 p_aliases = set([p]) | p.connections
                 common_port = port_aliases & p_aliases

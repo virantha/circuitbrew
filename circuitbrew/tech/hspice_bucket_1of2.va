@@ -1,0 +1,87 @@
+`define MAX_INPUTS 20000
+`define MAX_STRING 1000
+
+`include "constants.h"
+`include "discipline.h"
+
+module ${MODULE_NAME}(_pReset, _sReset, lt,lf,le);
+	input _pReset,_sReset, lt, lf;
+	output le;
+	voltage _pReset,_sReset,lt,lf,le;
+
+    parameter string NAME = "${MODULE_NAME}";
+	parameter real trise = 30p;
+	parameter real tfall = 30p;
+	parameter real vhigh = ${voltage};
+	parameter real vlow = 0.0;
+	real vle;
+
+    parameter integer N=${nvalues};
+    <% 
+    ASSIGN_STRING = ','.join([str(val) for val in reversed(values)])
+    %>
+    parameter integer values[N-1:0] = { ${ASSIGN_STRING} };
+
+	integer cvalue;
+	integer doneCompare;
+
+	analog begin
+		@(initial_step) begin
+			cvalue = 0;
+			vle = vlow;
+			doneCompare=0;
+		end
+
+		@(cross(V(_pReset)-vhigh/2,+1)) begin
+			vle = vlow;
+		end
+
+		@(cross(V(lt)-vhigh/2,+1)) begin
+			if (cvalue == N) doneCompare = 1;
+			if (doneCompare==0) begin
+				if (values[cvalue] == 0) begin
+					$display ("Error, %s %dth value expected 0, got 1", NAME, cvalue);
+				end 
+				else begin
+					$strobe ("At time %5.2f ns verified %dth value 1 to %s", $abstime()*1e9, cvalue, NAME);
+					vle = vlow;
+				end
+			end
+			else begin
+				$strobe ("At time %5.2f ns bucketed %dth value of 1 to %s", $abstime()*1e9,cvalue, NAME);
+				vle = vlow;
+			end
+			cvalue = cvalue + 1;
+		end
+
+		@(cross(V(lf)-vhigh/2,+1)) begin
+			if (cvalue == N) doneCompare = 1;
+			if (doneCompare==0) begin
+				if (values[cvalue] == 1) begin
+					$display ("Error, %s %dth value expected 1, got 0", NAME, cvalue);
+				end 
+				else begin
+					$display ("At time %5.2f ns verified %dth value of 0 to %s", $abstime()*1e9, cvalue, NAME);
+					vle = vlow;
+				end
+			end
+			else begin
+				$display ("At time %5.2f ns bucketed %dth value of 0 to %s", $abstime()*1e9, cvalue, NAME);
+				vle = vlow;
+			end
+			cvalue = cvalue + 1;
+		end
+
+		@(cross(V(_sReset)-vhigh/2,+1)) begin
+			vle = vhigh;
+		end
+
+		// Neutrality
+		@(cross(V(lf)-vhigh/2,-1) or cross(V(lt)-vhigh/2,-1)) begin
+			vle = vhigh;
+		end
+
+		V(le) <+ transition (vle, 0, trise, tfall);
+	end
+endmodule
+

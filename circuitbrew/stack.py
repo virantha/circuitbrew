@@ -1,6 +1,6 @@
 #from ports import Port, WithId
-from helpers import WithId
-from ports import *
+from .helpers import WithId
+from .ports import *
 
 class Stack(WithId):
 
@@ -51,7 +51,7 @@ class Stack(WithId):
     #     self.add_series_fet(nfet)
 
     def _get_fet(self, gate_port):
-        from fets import Pfet, Nfet
+        from .fets import Pfet, Nfet
         if gate_port._negated:
             # Pfet
             fet_type = Pfet

@@ -1,6 +1,6 @@
 import sys, inspect, logging
 from collections.abc import MutableSequence
-from helpers import WithId
+from .helpers import WithId
 from curio import Queue
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class Port(WithId):
         return self
 
     def __and__(self, other):
-        from stack import Stack
+        from .stack import Stack
         if isinstance(other, Stack):
             other.add_series_fet(self)
             return other
@@ -61,8 +61,8 @@ class Port(WithId):
             return stack
         
     def __or__(self, other):
-        from stack import Stack
-        from fets import Nfet
+        from .stack import Stack
+        from .fets import Nfet
         if isinstance(other, Stack):
             other.add_parallel_fet(self)
             return other
@@ -112,7 +112,6 @@ class Port(WithId):
                 p_str = f'{p.name}:{p.__class__.__name__}({hex(id(p))})'
                 connects.append(p_str)
 
-
             #connects = ','.join([f'{p.name}:{str(p)}' for p in self.connections if id(p)!=id(self) ])
             connects = ','.join(connects)
             return f'{s} -> [{connects}]'
@@ -139,6 +138,9 @@ class Port(WithId):
             return {self.name: self}
         else:
             return {f'{parent_scope_name}.{self.name}': self}
+
+    def iter_flattened(self):
+        yield self
 
     def is_flat(self):
         return True
@@ -258,6 +260,9 @@ class Ports(MutableSequence, WithId):
                 prefix = ''
             port_dict[f'{prefix}{port.name}'] = port
         return port_dict
+
+    def iter_flattened(self):
+        yield from self.ports.values()
 
     def is_flat(self):
         return False

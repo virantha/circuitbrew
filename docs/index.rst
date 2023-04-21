@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    readme
+   technical
    contributing
    authors
    api

@@ -1,8 +1,8 @@
 import logging
 from curio import spawn
 
-from module import Module, Leaf, SourceModule
-from helpers import LogBlock
+from .module import Module, Leaf, SourceModule
+from .helpers import LogBlock
 logger = logging.getLogger(__name__)
 
 class Walker: 
@@ -81,14 +81,17 @@ class SimPass(Walker):
         sim_modules.append(self.target)
 
         # Now, look at all the modules attached as attributes in the target module
-        # and walk those recursively
-        for varname, var in vars(self.target).items():
-            for i, module in enumerate(self.iter_flattened(var, 
-                                                lambda x: isinstance(x,Module) and not 
-                                                          isinstance(x, Leaf))):
-                logger.debug(f'Siming {i}:{module}')
-                walker = SimPass(module, f'{self.target_name}.{varname}{i}')
-                sim_submodules = await walker.run()
-                sim_modules.append(sim_submodules)
+        # and walk those recursively, if there's no sim method defined in the target class
+        has_sim_method = 'sim' in vars(self.target.__class__)
+        if not has_sim_method:
+            # We need to simulate all the sub instances recursively
+            for varname, var in vars(self.target).items():
+                for i, module in enumerate(self.iter_flattened(var, 
+                                                    lambda x: isinstance(x,Module) and not 
+                                                            isinstance(x, Leaf))):
+                    logger.debug(f'Siming {i}:{module}')
+                    walker = SimPass(module, f'{self.target_name}.{varname}{i}')
+                    sim_submodules = await walker.run()
+                    sim_modules.append(sim_submodules)
         LogBlock(f'Sim pass {self.target.name}')
         return sim_modules

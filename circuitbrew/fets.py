@@ -1,5 +1,5 @@
-from module import Leaf
-from ports import *
+from .module import Leaf
+from .ports import *
 
 class Fet(Leaf):
 

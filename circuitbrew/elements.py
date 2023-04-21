@@ -2,15 +2,15 @@ import os, logging
 from random import randint
 
 import curio
-from measure import Power
-from ports import *
-from globals import SupplyPort
-from module import Leaf, Module, ParametrizedModule, SourceModule
+from .measure import Power
+from .ports import *
+from .globals import SupplyPort
+from .module import Leaf, Module, ParametrizedModule, SourceModule
 
 # The template files
 from mako.template import Template
 import importlib.resources as pkg_resources
-import tech
+import circuitbrew.tech as tech
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +47,21 @@ class Supply(Module):
 
         self.finalize()
 
+class ResetPulse(Leaf):
+    node = Port()
+    p = SupplyPort()
+
+    def __init__(self, name, **kwargs):
+        super().__init__(name=name, **kwargs)
+    
+    def get_instance_spice(self, scope):
+        node_str = self.node.get_instance_spice(scope)
+        gnd_str = self.p.gnd.get_instance_spice(scope)
+        s = []
+        rsttime = 2
+        slope = 0.2
+        s.append(f'Vpwl{self.name} {node_str} {gnd_str} PWL (0n 0 {rsttime}n 0 {rsttime+slope}n {self.sim_setup["voltage"]})')
+        return 'n'.join(s)
 
 class VerilogModule(Module):
 
@@ -115,7 +130,7 @@ class VerilogSrc(VerilogParametrizedModule, SourceModule):
         simtype = self.sim_setup['sim_type']
         src_filename = self.src_filename[simtype]
         param_dict = {'values': self.values,
-                      'nvalues': 10, 
+                      'nvalues': len(self.values), 
                       'MODULE_NAME': self.get_module_type_name(),
                      }
         output_filename = f'template_{self._id}_{src_filename}'

@@ -4,9 +4,9 @@ import inspect
 from collections import Counter
 import logging
 
-from ports import Port, InputPort
-from symbols import SymbolTable
-from stack import Stack
+from .ports import Port, InputPort
+from .symbols import SymbolTable
+from .stack import Stack
 
 logger = logging.getLogger(__name__)
 class Module:
@@ -72,6 +72,7 @@ class Module:
     def _get_instance_ports(self, scope):
         connected = [port.get_instance_spice(scope) for port in self._sym_table.ports.values()] 
         return connected
+
    
     def dump_spice(self):
         s = self.get_spice()

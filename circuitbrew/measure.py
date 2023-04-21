@@ -1,7 +1,7 @@
 import logging
-from module import Leaf
-from ports import *
-from helpers import LogBlock
+from .module import Leaf
+from .ports import *
+from .helpers import LogBlock
 
 logger = logging.getLogger(__name__)
 
