@@ -6,12 +6,22 @@ from curio import Queue
 logger = logging.getLogger(__name__)
 
 class Port(WithId):
+    """The basic port class used to build up arrays of ports
+       Ports, and Compound ports.
+
+       Simulation abilities
+       --------------------
+       Has a built in queue to model transferring data from the sender
+       to the receiver.  The recv, send, and sim async functions implement
+       the actual data transfer.
+    """
 
     def __init__(self, name="", count=None):
         super().__init__()
         self.connections = set()
-        self._q = Queue()   # The input side of this port
+        self._q = Queue()   
         self.name = name
+
         if count:
             self.count = count
         logger.debug(f'__init__ ({name}): id = {self.count}')
@@ -90,7 +100,6 @@ class Port(WithId):
         port = self._get_or_create_port(instance)
         port._set(value)
 
-
     def _get_or_create_port(self, instance):
         if (port := instance.__dict__.get(self.name)):
             return port
@@ -145,14 +154,9 @@ class Port(WithId):
     def is_flat(self):
         return True
 
-
-class Wire(Port):
-    pass
-
 class InputPort(Port): pass
 
 class OutputPort(Port): pass
-
 
 
 class Ports(MutableSequence, WithId):
@@ -180,13 +184,11 @@ class Ports(MutableSequence, WithId):
             assert 'width' in kwargs, f'{type(self)} construction must specify width using (width=..)'
             self.width = kwargs['width']
 
-
     def __set_name__(self, cls, name):
         logger.debug(f'got name {name} for ')
         self.name = name
         #if not self.ports:  # In case we manually supplied the list of ports already in the constructore (items=...)
             #self.ports = [self.port_type(name=f'{self.name}[{i}]') for i in range(self.width)]
-        
 
     def _insert_into_instance(self, instance):
         if (ports := instance.__dict__.get(self.name)):
@@ -273,59 +275,31 @@ class InputPorts(Ports):
 class OutputPorts(Ports):
     port_type = OutputPort
 
-class BiggerModule:
-    a = InputPorts(width=5)
-    b = OutputPorts(width=4)
 
-class Wires(Ports):
-    port_type = Wire
+class InputPortsVariable(InputPorts):
 
     def __init__(self, **kwargs):
-        assert 'name' in kwargs, f'Wire array {self} must specify name using Wires(name=..., width=...)'
-        super().__init__(**kwargs)
-        self.__set_name__(None, kwargs['name'])
+        # Need some way to make the length optional
 
-        
-if __name__=='__main__':
-    m = SimpleModule()
-    print(m.p)
-    global_gnd = Wire('GND')
-    global_vdd = Wire('VDD')
-    a = SupplyPort()
-    a.vdd = global_vdd
-    a.gnd = global_gnd
+        super().__init__()
 
-    #m.p.gnd = global_gnd
-    m.p = a
-    print(m.p)
+        self.ports = None
+        if (count := kwargs.get('count')):
+            self.count = count
+        if 'items' in kwargs:
+            items = kwargs['items']
+            self.width = len(items) 
+            self.ports = items
+            if 'name' in kwargs:
+                self.name = kwargs['name']
+        elif 'name' in kwargs:
+            assert 'width' in kwargs, f'{type(self)} construction must specify width using (width=..)'
+            self.width = kwargs['width']
+            self.name = kwargs['name']
+            # Enough info to instantiate this object
+            self.ports = [self.port_type(name=f'{self.name}[{i}]') for i in range(self.width)]
 
-
-    
-    m = BiggerModule()
-    print(m.a)
-    m.a[0] = m.b[2]
-    wires = Wires(name='w',width=8)
-    print(wires)
-    print('connections:')
-    print(m.a[0].connections)
-    m.a[1:3] = wires[0:2]
-    print(m.a[2].connections)
-    sys.exit(0)
-
-    m = Module()
-    f = Wire(key='f', width=5)
-    print(m.a)
-    print(m.b)
-    print(m.a[0].connections)
-    m.a[0] = f[0]
-    print(m.a[0])
-
-    print(m.a[0].connections)
-    g = Wire(key='g', width=4)
-    m.b = g
-    print(m.b)
-    print(m.b[0].connections)
-    m.b[1] = m.a[2]
-    print(m.b[1].connections)
-
-
+        else:
+            # Decorator only
+            assert 'width' in kwargs, f'{type(self)} construction must specify width using (width=..)'
+            self.width = kwargs['width']

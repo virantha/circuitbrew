@@ -65,7 +65,6 @@ class SymbolTable:
 
 
     def _get_set_of_connections(self, port, port_name, connection_dict):
-        #parent_scope_name = '' if port.is_flat() else port_name
         if port.is_flat() or isinstance(port, Ports):
             parent_scope_name = ''
         else:
