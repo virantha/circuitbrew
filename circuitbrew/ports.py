@@ -128,15 +128,22 @@ class Port(WithId):
             return s
 
     def get_spice(self):
+        """When building the subckt definition's port list, just return the name of this
+           port.
+        """
         return self.name
 
-    def get_instance_spice(self, scope):
+    def get_instance_spice(self, scope: "SymbolTable"):
+        """When a module is instanced, then we need to find the proper
+           argument name to pass in to the port.  This is done using the scope, 
+           to translate this port object into the scoped variable name.
+        """
         #assert len(self.connections) > 0, f'{self} is not connected!'
-        #if (port_tuple := scope.get_port_from_scope(self)):
         if (port_tuple := scope.get_symbol_from_scope(self)):
             port_name, port = port_tuple
             return port_name
         else:
+            # TODO: Convert this to an assert in production code
             return 'UNC'
 
     def __iter__(self):
@@ -264,7 +271,9 @@ class Ports(MutableSequence, WithId):
         return port_dict
 
     def iter_flattened(self):
-        yield from self.ports.values()
+        yield from self.ports
+        # for port in self.ports:
+        #     yield from port.iter_flattened()
 
     def is_flat(self):
         return False
@@ -276,30 +285,3 @@ class OutputPorts(Ports):
     port_type = OutputPort
 
 
-class InputPortsVariable(InputPorts):
-
-    def __init__(self, **kwargs):
-        # Need some way to make the length optional
-
-        super().__init__()
-
-        self.ports = None
-        if (count := kwargs.get('count')):
-            self.count = count
-        if 'items' in kwargs:
-            items = kwargs['items']
-            self.width = len(items) 
-            self.ports = items
-            if 'name' in kwargs:
-                self.name = kwargs['name']
-        elif 'name' in kwargs:
-            assert 'width' in kwargs, f'{type(self)} construction must specify width using (width=..)'
-            self.width = kwargs['width']
-            self.name = kwargs['name']
-            # Enough info to instantiate this object
-            self.ports = [self.port_type(name=f'{self.name}[{i}]') for i in range(self.width)]
-
-        else:
-            # Decorator only
-            assert 'width' in kwargs, f'{type(self)} construction must specify width using (width=..)'
-            self.width = kwargs['width']

@@ -273,7 +273,7 @@ xmp0 p.vdd a b UNC pch_svt_mac nfin=2 l=0.008u
                     for flattened in sub_port.iter_flattened():
                         logger.debug(f'\t\tChecking {port} against {flattened}')
                         if port == flattened or flattened in port.connections:
-                            return Symbol(f'{sub_port_name}', sub_port, hierarchy=p_name)
+                            return Symbol(f'{sub_port_name}', flattened, hierarchy=p_name)
             elif p.is_flat():
                 p_aliases = set([p]) | p.connections
                 common_port = port_aliases & p_aliases

@@ -1,10 +1,10 @@
 from random import randint
 
-from module import *
-from ports import *
-from globals import SupplyPort
-from fets import *
-from elements import VerilogBucket, VerilogClock, VerilogSrc, Supply
+from circuitbrew.module import *
+from circuitbrew.ports import *
+from circuitbrew.globals import SupplyPort
+from circuitbrew.fets import *
+from circuitbrew.elements import VerilogBucket, VerilogClock, VerilogSrc, Supply
 
 class Nand(Module):
     a = InputPorts(width=2)

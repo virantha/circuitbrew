@@ -1,9 +1,9 @@
 from random import randint
-from module import *
-from ports import *
-from globals import SupplyPort
-from elements import Supply, VerilogClock, VerilogSrc, VerilogBucket
-from fets import *
+from circuitbrew.module import *
+from circuitbrew.ports import *
+from circuitbrew.globals import SupplyPort
+from circuitbrew.elements import Supply, VerilogClock, VerilogSrc, VerilogBucket
+from circuitbrew.fets import *
 
 
 class Inv(Module):
