@@ -44,3 +44,10 @@ output/*/index.html
 # Sphinx
 docs/_build
 docs/_autosummary
+docs.sphinx
+
+.vscode
+site
+
+# Proprietary files
+circuitbrew/tech/process/n7

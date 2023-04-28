@@ -1,0 +1,23 @@
+
+# Skywater 130nm 
+
+tech: sw130
+voltage: 1.8
+temp: 85
+output_dir: 'output'
+template: 'sw130.sp'
+
+Fet:
+  auto:
+    l: 0.5    # Length
+    w:  1.0   # Default width
+    vt: lvt   # Default vt 
+    width_id: w  # Name in spice xtor model for width/nfin/etc
+  Pfet:
+    auto:
+      # Define xtor models for different VTs
+      lvt: sky130_fd_pr__pfet_01v8_lvt
+  Nfet:
+    auto:
+      # Define xtor models for different VTs
+      lvt: sky130_fd_pr__nfet_01v8_lvt

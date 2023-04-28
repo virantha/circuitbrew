@@ -1,0 +1,14 @@
+site_name: CircuitBrew
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+
+
+
+nav:  
+  - index.md
+  - readme.md
+  - api.md
