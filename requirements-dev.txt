@@ -3,9 +3,6 @@ tox
 schema
 docopt-ng
 restview
-sphinx
-sphinx-readable-theme
-sphinx-book-theme
 setuptools
 wheel
 twine
@@ -15,3 +12,8 @@ pytest-cov
 pytest-curio
 coveralls
 pyyaml
+pyyaml-include
+mkdocs
+mkdocs-material
+"mkdocstrings[python]"
+

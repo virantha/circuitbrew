@@ -12,22 +12,9 @@ class Inv(Module):
     p = SupplyPort()
 
     def build(self):
-        self.pup = Pfet()
-        self.ndn = Nfet()
-        self.pup.g = self.inp
-        self.pup.d = self.p.vdd
-        self.pup.s = self.out
-        self.pup.b = self.p.vdd
-
-        self.ndn.g = self.inp
-        self.ndn.d = self.out
-        self.ndn.s = self.p.gnd
-        self.ndn.b = self.p.gnd
-        # self.stack = self.make_stacks(output = self.out,
-        #                               pdn = self.inp,
-        #                               pup = self.inp,
-        #                               power=self.p
-        #                               )
+        vdd, gnd = self.p.vdd, self.p.gnd
+        self.pup = Pfet(g=self.inp, d=vdd, s=self.out, b=vdd)
+        self.ndn = Nfet(g=self.inp, d=self.out, s=gnd, b=gnd)
         self.finalize()
 
     async def sim(self):
@@ -41,21 +28,17 @@ class Main(Module):
     def build(self):
         self.supply = Supply('vdd', self.sim_setup['voltage'], )
         p = self.supply.p
-
+        vdd, gnd = p.vdd, p.gnd
         self.inv = Inv('myinv', p=p)
-        inv_in = self.inv.inp
-        #inv_out = self.inv.out
 
-        self.clk_gen = VerilogClock('clk', freq=750e3, enable=p.vdd)
-        clk = self.clk_gen.clk
+        self.clk_gen = VerilogClock('clk', freq=750e3, enable=vdd)
+        src_clk = self.clk_gen.clk
 
-        self.clk_buc = VerilogClock('clk2', freq=750e3, offset='100p',enable=self.supply.p.vdd)
-        clk2 = self.clk_buc.clk
+        self.clk_buc = VerilogClock('clk2', freq=750e3, offset='100p', enable=vdd)
+        sample_clk = self.clk_buc.clk
 
         self.src = VerilogSrc('src', [randint(0,1) for i in range(10)], 
-                             d=inv_in, clk=clk, _reset=self.supply.p.vdd)
+                             d=self.inv.inp, clk=src_clk, _reset=vdd)
 
-        #self.src2 = VerilogSrc('src2', [randint(0,1) for i in range(10)])
-
-        self.bucket = VerilogBucket(name='buc', clk=clk2, _reset=self.supply.p.vdd, d=self.inv.out)
+        self.bucket = VerilogBucket(name='buc', clk=sample_clk, _reset=vdd, d=self.inv.out)
         self.finalize()

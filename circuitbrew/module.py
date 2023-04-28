@@ -66,7 +66,7 @@ class Module:
 
         def _get_auto_dict(d):
             # At each dict level, we search for each base class name
-            for bc in base_classes):
+            for bc in base_classes:
                 bc_name = bc.__name__
                 bc_dict = d.get(bc_name, {})
                 if bc_dict:
