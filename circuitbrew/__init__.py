@@ -5,11 +5,8 @@
 Submodules
 ==========
 
+
 .. autosummary::
     :toctree: _autosummary
 
-    circuitbrew
-    ports
-    walker
-    symbols
 """

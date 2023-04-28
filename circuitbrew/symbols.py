@@ -7,23 +7,16 @@ logger = logging.getLogger(__name__)
 class Symbol:
     """
         A class representing a symbol with hierarchical naming.
-
-        :param name: The name of the symbol.
-        :type name: str
-        :param port: The port number associated with the symbol.
-        :type port: int
-        :param hierarchy: The parent symbol in the hierarchy, defaults to None.
-        :type hierarchy: Symbol, optional
     """
-    def __init__(self, name, port, hierarchy=None):
+    def __init__(self, name: str, port: Port, hierarchy: str = None):
         """
         Generate the hierarchical name of the symbol by recursively concatenating
         parent names in the hierarchy, separated by the specified separator.
 
-        :param separator: The separator to use between hierarchical names, defaults to '.'.
-        :type separator: str, optional
-        :return: The hierarchical name of the symbol.
-        :rtype: str
+        Args:
+            name: Symbol name
+            port: Port that is referred to by this symbol
+            hierarchy: The parent (for examplate a.a)
         """
         self.name = name
         self.port = port

@@ -1,4 +1,3 @@
-
 import curio
 import inspect
 from collections import Counter
@@ -39,6 +38,49 @@ class Module:
         logger.debug(self._sym_table.ports)
         for name, p in self._sym_table.ports.items():
             logger.debug (f'{p.count} ')
+
+        self.get_sim_setup(**kwargs)
+
+        self.post_init()
+
+    def post_init(self): pass
+
+    def get_sim_setup(self, **kw: dict):
+        """Called at the end of __init__ to take any settings
+           from the tech file and apply them automatically as member variables
+           to this object.
+
+           If any of these settings have been overridden by the user via the
+           kwargs, then apply those instead
+           
+           Args:
+                kw: any options you want to override during module/leaf instancing
+           Returns:
+                None
+        """
+        # Get any settings from the sim_setup dict, mapped by class name
+        setup_dict = self.sim_setup
+
+        # Reverse MRO so we apply defaults from base class -> sub classes
+        base_classes = reversed(inspect.getmro(self.__class__))
+
+        def _get_auto_dict(d):
+            # At each dict level, we search for each base class name
+            for bc in base_classes):
+                bc_name = bc.__name__
+                bc_dict = d.get(bc_name, {})
+                if bc_dict:
+                    # base class name is found, so check if there are any auto settings
+                    auto = bc_dict.get('auto', {})
+                    for k,v in auto.items():
+                        # Check if user overrode with kwargs
+                        if k in kw:
+                            setattr(self, k, kw[k])
+                        else:
+                            setattr(self, k, v)
+                    # Recurse
+                    _get_auto_dict(bc_dict)
+        _get_auto_dict(setup_dict)
 
     def iter_flattened(self, myiter, filter=lambda x: x is not None):
         """Iterator to flatten arbitrary nested lists"""
@@ -205,3 +247,39 @@ class ParametrizedModule():
 
 class SourceModule: # Just to keep track of when to stop a simulation
     pass
+
+
+def Param(name):
+    """Returns a new function that returns the instance variable "name" of 
+       the specified instance
+    """
+    def lookup(self):
+        v = getattr(self, name)
+        return v
+    return lookup
+
+def Parametrize(cls, **kwargs):
+    """Given Parametrize(cls, N=3, P=4), 
+        it will return a new subclass of cls that has an __init__
+        that sets instance vars N and P
+
+        e.g Parametrize(cls, N=3, P=4) is effectively returning the following:
+
+            Class subcls_N_3_P_4(cls):
+                def __init__(self, *args, **kwargs):
+                    self.N = 3
+                    self.P = 4
+                    cls.__init__(self, *args, **kwargs)
+
+    """
+    params_to_str = '_'.join([f'{name}_{val}' for name, val in kwargs.items()])
+
+    def init_fn(self, *a, **kw):
+        for name, val in kwargs.items():
+            setattr(self, name, val)
+        cls.__init__(self, *a, **kw)
+
+    parametrized_class = type(f'{cls.__name__}_{params_to_str}', (cls,), 
+                              { '__init__': init_fn })
+
+    return parametrized_class

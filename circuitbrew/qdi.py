@@ -45,7 +45,7 @@ class Inv(Module):
 
     def build(self):
 
-        self.pup = Pfet(g=self.inp, d=self.p.vdd, s=self.out, b=self.p.vdd)
+        self.pup = Pfet(w=3, g=self.inp, d=self.p.vdd, s=self.out, b=self.p.vdd)
         self.ndn = Nfet(g=self.inp, d=self.p.gnd, s=self.out, b=self.p.gnd)
         #self.ndn = Nfet()
         # self.pup.g = self.inp

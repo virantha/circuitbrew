@@ -33,7 +33,7 @@ class Stack(WithId):
         elif isinstance(other, Stack):
             # Merge the two stacks
             other.bot._set(self.bot)
-            self.top._set = other.top
+            self.top =  other.top
             self.fets += other.fets
             return self
         else:
@@ -50,9 +50,9 @@ class Stack(WithId):
     #     nfet.g = gate_port
     #     self.add_series_fet(nfet)
 
-    def _get_fet(self, gate_port):
+    def _get_fet(self, gate_port, negated):
         from .fets import Pfet, Nfet
-        if gate_port._negated:
+        if negated:
             # Pfet
             fet_type = Pfet
         else:
@@ -61,8 +61,8 @@ class Stack(WithId):
         fet.g = gate_port
         return fet
 
-    def add_series_fet(self, gate_port):
-        fet = self._get_fet(gate_port)
+    def add_series_fet(self, gate_port, negated=False):
+        fet = self._get_fet(gate_port, negated)
         self._connect_series_fet(fet)
 
     def _connect_series_fet(self, fet):
@@ -82,8 +82,8 @@ class Stack(WithId):
             self.top = fet.d
             self.bot = fet.s
 
-    def add_parallel_fet(self, gate_port):
-        fet = self._get_fet(gate_port)
+    def add_parallel_fet(self, gate_port, negated=False):
+        fet = self._get_fet(gate_port, negated)
         self._connect_parallel_fet(fet)
 
     def _connect_parallel_fet(self, fet):

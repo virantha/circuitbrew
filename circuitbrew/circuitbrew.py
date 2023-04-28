@@ -1,31 +1,11 @@
-"""
-Generate a spice netlist from a Python representation
-
-Usage:
-    netlist.py [options] TECH MODULE NETLIST_TYPE all
-    netlist.py [options] TECH MODULE NETLIST_TYPE (%s)...
-
-    netlist.py -h
-
-Arguments:
-    TECH     Tech file to use
-    MODULE   Module to netlist
-    NETLIST_TYPE   Type of netlist to output
-    all      Run all steps in the flow (%s)
-%s
-
-Options:
-    -h --help                 show this message
-    -v --verbose              show more information
-    -d --debug                show even more information              
-
-"""
 import sys, logging
+from pathlib import Path
 import curio
 from docopt import docopt
 from mako.template import Template
-from importlib import import_module 
-import importlib.resources as pkg_resources
+from importlib import import_module
+import importlib
+import yaml
 
 import os
 from .walker import BuildPass, NetlistPass, SimPass
@@ -48,30 +28,61 @@ class CircuitBrew:
     """
 
     file_extension = { 'hspice': 'sp', 'verilog': 'v'}
-    def __init__(self):
+    def __init__(self, docopt_string):
         self.flow = { 'build': 'Build netlist',
                       'sim'  : 'Simulate vectors',
                       'netlist': 'Output netlist',
                     }
+        self.docopt_string = docopt_string
+
+    def _get_techfile(self, process: str) -> tuple[dict, str]:
+        """
+            Read the tech file from process/tech.yml and the template spice file
+            for the process.  
+            
+            Two locations are searched:
+
+            1. *Built-in*: The package resource inside circuitbrew/tech/process/{process}
+            2. *Locally supplied*: The local directory {process}
+            
+            Args:
+                process: A string like 'n7' or 'sw130', or a local directory
+            
+            Returns:
+                (techoptions, template_file):  A dict of the tech options and the contents of the template spice file
+        """
+        pth = importlib.resources.files(tech) / 'process' / process
+        if not pth.exists():
+            pth_local = Path(process)
+            assert pth_local.exists(), f'Cannot find process {process} in {pth} or {pth_local}'
+            pth = pth_local
+
+        with open(pth / 'tech.yml') as f:
+            techfile = f.read()
+            techoptions = yaml.safe_load(techfile)
+        
+        template_filename = techoptions['template']
+
+        with open(pth / template_filename) as f:
+            template_file = f.read()
+
+        return techoptions, template_file
 
     def netlist(self):
-        #template_str = pkg_resources.read_text(tech, self.techfile)
-        template_str = pkg_resources.files(tech).joinpath(self.techfile).read_text()
+        tech_options, template_str = self._get_techfile(self.process)
         mytemplate = Template(template_str)
 
         circuit_lib = import_module(self.module)
 
-        main = circuit_lib.Main()
-        sim_setup = {'voltage': '0.75',
-                    'temp': "105",
-                    'output_dir': 'output',
-                    'sim_type': self.netlist_type,
-        }
+        sim_setup = tech_options
+        sim_setup['sim_type'] = self.netlist_type   # Add in whether CL option was hspice or verilog
+
         # Measure.sim_setup = sim_setup
         # Leaf.sim_setup = sim_setup
         # G.sim_setup = sim_setup
         Module.sim_setup = sim_setup
         #sim_setup['circuit'] = main.get_netlist('xmain')
+        main = circuit_lib.Main()
         walker = BuildPass(main, 'xmain')
         walker.run()
         
@@ -106,9 +117,9 @@ class CircuitBrew:
             :ivar config: Dict of the config file
 
         """
-        docstring = __doc__ 
+        docstring = self.docopt_string 
         padding = max([len(x) for x in self.flow.keys()]) # Find max length of flow step names for padding with white space
-        docstring = __doc__ % ('|'.join(self.flow), 
+        docstring = docstring % ('|'.join(self.flow), 
                               ','.join(self.flow.keys()),
                               '\n'.join(['    '+k+' '*(padding+4-len(k))+v for k,v  in self.flow.items()]))
         args = docopt(docstring, version=__version__)
@@ -133,7 +144,7 @@ class CircuitBrew:
         #self.parameters = ordered_load(args['PARAMFILE'])
         #self.run_dir = args['--rundir']
 
-        self.techfile = args['TECH']
+        self.process = args['TECH']
         self.module   = args['MODULE']
         self.netlist_type = args['NETLIST_TYPE']
 
@@ -158,11 +169,3 @@ class CircuitBrew:
         self.get_options(argv)
         logger.info('Setting up run...')
         self.netlist()
-
-def main():
-    script = CircuitBrew()
-    #script.go(['n7.sp', 'examples.simple3', 'hspice', 'all'])
-    script.go(sys.argv[1:])
-
-if __name__=='__main__':
-    main()

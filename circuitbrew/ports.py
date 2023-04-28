@@ -25,12 +25,15 @@ class Port(WithId):
         if count:
             self.count = count
         logger.debug(f'__init__ ({name}): id = {self.count}')
-        self._negated = None
 
     # ----------------------------------------------------------------
     # Simulation related methods
     # ----------------------------------------------------------------
     async def recv(self):
+        """Receive a value on the internal Curio queue
+
+           :return: received value
+        """
         q = self._q
         tok = await q.get()
         #await q.task_done()
@@ -54,12 +57,16 @@ class Port(WithId):
     #   e.g. port_a & port_b yields a series n-fet stack 
     # ----------------------------------------------------------------
     def __invert__(self):
-        #assert not self._negated, 'Can only negate a port once'
-        self._negated = True
-        return self
+        logger.debug(f'NEGATING port {self}')
+        from .stack import Stack
+        stack=Stack()
+        stack.add_parallel_fet(self, negated=True)
+        return stack
+
 
     def __and__(self, other):
         from .stack import Stack
+        logger.debug(f'ANDing ports {self} with {other}')
         if isinstance(other, Stack):
             other.add_series_fet(self)
             return other
@@ -73,6 +80,7 @@ class Port(WithId):
     def __or__(self, other):
         from .stack import Stack
         from .fets import Nfet
+        logger.debug(f'ORing ports {self} with {other}')
         if isinstance(other, Stack):
             other.add_parallel_fet(self)
             return other
@@ -201,6 +209,9 @@ class Ports(MutableSequence, WithId):
         if (ports := instance.__dict__.get(self.name)):
             return ports
         else:
+            # Check if there was parameter for the width.  If so, it will be a deferred callable that should
+            # resolve at this point (because the instance has been instantiatied).
+            if callable(self.width): self.width = self.width(instance)
             ports = instance.__dict__[self.name] = type(self)(name=self.name, width=self.width, count=self.count)
             return ports
 
