@@ -16,13 +16,3 @@ CircuitBrew is a great piece of software!
 
 See docs
 
-## Installation
-
-.. code-block:: bash
-
-    $ pip install circuitbrew
-
-## Disclaimer
-
-The software is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

@@ -169,9 +169,15 @@ class Port(WithId):
     def is_flat(self):
         return True
 
-class InputPort(Port): pass
+class InputPort(Port): 
+    """Single bit Input Port
+    """
+    pass
 
-class OutputPort(Port): pass
+class OutputPort(Port): 
+    """Single bit Output Port
+    """
+    pass
 
 
 class Ports(MutableSequence, WithId):

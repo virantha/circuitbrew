@@ -24,13 +24,13 @@ class Main(Module):
         for i in range(1,N):
             self.buf[i].l = self.buf[i-1].r
 
-        #_sR = self._sreset_pulse.node
+        _sR = self._sreset_pulse.node
         l = self.buf[0].l
         r = self.buf[N-1].r
 
         self.src = VerilogSrcE1of2(
             name = 'src', values=[randint(0,1) for i in range(10)],
-            _pReset=_pR, _sReset=self._sreset_pulse.node)
+            _pReset=_pR, _sReset= _sR)
         self.src.l = self.buf[0].l
 
         self.buc = VerilogBucketE1of2(

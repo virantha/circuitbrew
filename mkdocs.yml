@@ -1,9 +1,17 @@
 site_name: CircuitBrew
-
+repo_url: https://github.com/virantha/CircuitBrew
 theme:
   name: "material"
 
+  features:
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.expand
+
 plugins:
+  - search
+  - autorefs
   - mkdocstrings
 
 markdown_extensions:
@@ -17,6 +25,13 @@ markdown_extensions:
 
 
 nav:  
-  - index.md
-  - readme.md
-  - api.md
+  - Home: index.md
+  - Usage guide:
+      - 'Generating netlists': usage/generating.md
+      - 'Writing circuits': usage/writing.md
+      - Examples:
+          - Inverter: usage/examples/inverter.md
+      - 'Techfiles': usage/techfiles.md
+  - API: 
+      - Module: api/api_module.md
+      - Ports: api/api_ports.md

@@ -39,7 +39,7 @@ and smaller-node foundries.
 
 ```
 ## Usage
-Please see the [usage guide](usage.md). 
+Please see the [usage guide](usage/). 
 
 ## Disclaimer
 
