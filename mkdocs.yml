@@ -12,7 +12,16 @@ theme:
 plugins:
   - search
   - autorefs
-  - mkdocstrings
+  - glightbox
+  - mkdocstrings:
+      watch:
+        - circuitbrew
+      handlers:
+        python:
+          selection:
+            filters:
+              - ".*"
+
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -22,7 +31,11 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
-
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 nav:  
   - Home: index.md
@@ -31,7 +44,12 @@ nav:
       - 'Writing circuits': usage/writing.md
       - Examples:
           - Inverter: usage/examples/inverter.md
+          - Inverter with Model: usage/examples/inverter_sim.md
+          - QDI Handshake circuit: usage/examples/wchb.md
       - 'Techfiles': usage/techfiles.md
   - API: 
       - Module: api/api_module.md
       - Ports: api/api_ports.md
+      - CompoundPort: api/api_compound_ports.md
+      - Fets: api/api_fets.md
+      - Elements: api/api_elements.md

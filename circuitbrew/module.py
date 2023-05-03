@@ -233,12 +233,21 @@ class Module:
         
 
 class Leaf(Module):
+    """ A Leaf cell has no instances attached to it. 
+
+        It will emit its own spice (for example a transistor), or emit an 
+        measurement command.
+    """
     def build(self):
-        # No submodules instanced in a leaf
+        """ Finalize this without adding any instances
+        """
         logger.debug(f'Finalized leaf {self.name}')
         self.finalize()
 
     def finalize(self): 
+        """Override the Module's finalize class because we don't
+           want to capture any local variables, for example
+        """
         self.finalize_called = True
 
 class ParametrizedModule():

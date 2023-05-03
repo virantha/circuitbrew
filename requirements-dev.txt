@@ -16,4 +16,5 @@ pyyaml-include
 mkdocs
 mkdocs-material
 "mkdocstrings[python]"
+mkdocs-glightbox
 

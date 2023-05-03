@@ -1,7 +1,7 @@
 from random import randint
 from circuitbrew.module import *
 from circuitbrew.ports import *
-from circuitbrew.globals import SupplyPort
+from circuitbrew.compound_ports import SupplyPort
 from circuitbrew.elements import Supply, VerilogClock, VerilogSrc, VerilogBucket
 from circuitbrew.fets import *
 

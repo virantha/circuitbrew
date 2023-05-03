@@ -1,13 +1,36 @@
 from .symbols import SymbolTable
-from .ports import *
+from .ports import Port
 
 class CompoundPort(Port):
+    """ Aggregate different ports into one structure (like a struct) by subclassing this.
+
+        Examples:
+            Combining data/clk into one Port instance.
+
+            ``` py
+            class DataClk(CompoundPort):
+                din = InputPort()
+                dout = OutputPort()
+                clk = InputPort()
+            ```
+
+        Attributes:
+            sym_table (SymbolTable): Hold all the mappings
+    """
 
     def __init__(self, name=""):
+        """In general, no extra args except the name if needed
+        """
         super().__init__(name)
         self.sym_table = SymbolTable(self)
 
     def _insert_into_instance(self, instance):
+        """ Used for the descriptor protocol for attribute access to the sub ports.
+
+            Returns:
+
+                CompoundPort: Either the lookup if it exists, or the newly created self
+        """
         
         # Need to create a new CompoundPort object and create new Sub port objects to go along with it
         if (compound_port:= instance.__dict__.get(self.name)):
@@ -19,7 +42,6 @@ class CompoundPort(Port):
                 compound_port.__dict__[sub_port_name] = type(sub_port)(name=f'{sub_port_name}')
             instance.__dict__[self.name] = compound_port
             return compound_port
-
 
     def __get__(self, instance, cls):
         port = self._insert_into_instance(instance)
@@ -104,5 +126,7 @@ class CompoundPort(Port):
             
 
 class SupplyPort(CompoundPort):
+    """Use this for passing around the vdd and gnd global ports
+    """
     vdd = Port()
     gnd = Port()

@@ -8,7 +8,7 @@ class Main(Module):
                              measure=True )
         self.p = self.supply.p
         p = self.supply.p
-        self._preset_pulse = ResetPulse('preset', p=p)
+        self._preset_pulse = ResetPulse('preset', p=p, slope=0.5)
         self._sreset_pulse = ResetPulse('sreset', p=p)
         
 

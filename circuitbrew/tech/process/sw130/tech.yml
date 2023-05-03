@@ -6,6 +6,7 @@ voltage: 1.8
 temp: 85
 output_dir: 'output'
 template: 'sw130.sp'
+simtime: 30n
 
 Fet:
   auto:
@@ -21,3 +22,8 @@ Fet:
     auto:
       # Define xtor models for different VTs
       lvt: sky130_fd_pr__nfet_01v8_lvt
+  
+ResetPulse:
+  auto:
+    slope: 0.5
+    deassert_time: 4

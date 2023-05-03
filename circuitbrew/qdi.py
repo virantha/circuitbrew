@@ -1,5 +1,5 @@
 import curio, logging
-from .globals import SupplyPort, CompoundPort
+from .compound_ports import SupplyPort, CompoundPort
 from .ports import *
 from .fets import *
 from .module import Module, SourceModule

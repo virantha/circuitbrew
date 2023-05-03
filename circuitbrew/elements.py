@@ -1,10 +1,9 @@
-import os, logging
-from random import randint
-
+import os
+import logging
 import curio
 from .measure import Power
 from .ports import *
-from .globals import SupplyPort
+from .compound_ports import SupplyPort
 from .module import Leaf, Module, ParametrizedModule, SourceModule
 
 # The template files
@@ -15,23 +14,59 @@ import circuitbrew.tech as tech
 logger = logging.getLogger(__name__)
 
 class VoltageSource(Leaf):
+    """ Emits a voltage source with ref to global '0'.  If you're trying to define
+        the system global voltage supply, then I recommend using
+        instead [circuitbrew.elements.Supply][] which instantiates this module
+        and gives you access to vdd and gnd
+        as a [circuitbrew.compound_ports.SupplyPort][]
+
+
+        Args:
+            name: Name for the voltage source subcircuit instance
+            voltage: Voltage level ('1.8V', '750mV', etc)
+            measure: Whether to measure power or not (not implemented)
+
+        Other Args:
+            node (Port): The node to apply the voltage to
+        
+    """
     node = Port()
 
-    def __init__(self, name, voltage, measure=False):
-        super().__init__(name=name)
+    def __init__(self, name: str, voltage: str, measure: bool =False, **kwargs):
+        super().__init__(name=name, **kwargs)
         self.voltage = voltage
         self.measure = measure
 
     def get_instance_spice(self, scope):
+        """
+        """
         connected = ' '.join(self._get_instance_ports(scope))
         s = []
         s.append(f'V{self.name} {connected} 0 {self.voltage}')
         return '\n'.join(s)
 
 class Supply(Module):
+    """ Instantiate the full supply for vdd and gnd as a sub-circuit.
+
+        Examples:
+
+            >>> self.vdd_supply = Supply(name='vdd', voltage=self.sim_setup['voltage'])
+                p = self.vdd_supply.p
+                vdd = p.vdd
+                gnd = p.gnd
+
+        Args:
+            name: Name for the voltage source subcircuit instance
+            voltage: Voltage level ('1.8V', '750mV', etc)
+            measure: Whether to measure power or not
+            
+        Other Args:
+            p (SupplyPort, Optional): The port to connect to
+        
+    """
     p = SupplyPort()
 
-    def __init__(self, name, voltage, measure=None, **kwargs):
+    def __init__(self, name, voltage, measure=True, **kwargs):
         super().__init__(name=name, **kwargs)
         self.voltage = voltage
         self.measure = measure
@@ -48,6 +83,29 @@ class Supply(Module):
         self.finalize()
 
 class ResetPulse(Leaf):
+    """ Create a single step waveform (useful for Reset signals)
+
+        Examples:
+
+            >>> self.rst = ResetPulse(name='rst', node=myport, p=p) 
+
+            This will use the settings in tech.yml for timing of step.
+            
+            >>> self.rst = ResetPulse(name='rst', slope=0.5, deassert_time=4)
+
+            Move step to 5n and complete step after 0.5n
+
+        Args:
+            name: Name for the voltage source subcircuit instance
+            
+        Other Args:
+            slope (float): 0-100% time in ns
+            deassert_time (float): When to create the step
+
+        Attributes:
+            node (Port): Where the reset pulse is connected 
+            p    (SupplyPort):  
+    """
     node = Port()
     p = SupplyPort()
 
@@ -58,9 +116,8 @@ class ResetPulse(Leaf):
         node_str = self.node.get_instance_spice(scope)
         gnd_str = self.p.gnd.get_instance_spice(scope)
         s = []
-        rsttime = 2
-        slope = 0.2
-        s.append(f'Vpwl{self.name} {node_str} {gnd_str} PWL (0n 0 {rsttime}n 0 {rsttime+slope}n {self.sim_setup["voltage"]})')
+        rsttime = self.deassert_time
+        s.append(f'Vpwl{self.name} {node_str} {gnd_str} PWL (0n 0 {rsttime}n 0 {rsttime+self.slope}n {self.sim_setup["voltage"]})')
         return 'n'.join(s)
 
 class VerilogModule(Module):
