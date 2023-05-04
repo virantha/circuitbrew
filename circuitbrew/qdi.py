@@ -1,73 +1,13 @@
 import curio, logging
-from .compound_ports import SupplyPort, CompoundPort
-from .ports import *
+from .compound_ports import SupplyPort, E1of2InputPort, E1of2OutputPort
+from .ports import InputPorts, InputPort, OutputPort, OutputPorts 
 from .fets import *
 from .module import Module, SourceModule
 from .elements import VerilogParametrizedModule
 
 logger = logging.getLogger(__name__)
 
-class E1of2(CompoundPort):
-    """For simulation, we will do a quick hack to make sure
-    that we don't need to handle the data wires and enable individually.
-    The async queues already give us all the back-pressure behavior we need.
-    We will send the data value on the true rail only, and ignore the f
-    and e rails
-    """
-    t = Port()
-    f = Port()
-    e = Port()
 
-# ----------------------------------------------------------------
-# Simulation related methods for E1of2
-# ----------------------------------------------------------------
-    async def send(self, val):
-        await self.t.send(val)
-
-    async def recv(self):
-        val = await self.t.recv()
-        logger.info(f'channel {self} received {val}')
-        return val
-
-class E1of2InputPort(E1of2):
-    pass
-
-class E1of2OutputPort(E1of2):
-    pass
-
-
-
-class Inv(Module):
-    inp = InputPort()
-    out = OutputPort()
-
-    p = SupplyPort()
-
-    def build(self):
-
-        self.pup = Pfet(w=3, g=self.inp, d=self.p.vdd, s=self.out, b=self.p.vdd)
-        self.ndn = Nfet(g=self.inp, d=self.p.gnd, s=self.out, b=self.p.gnd)
-        #self.ndn = Nfet()
-        # self.pup.g = self.inp
-        # self.pup.d = self.p.vdd
-        # self.pup.s = self.out
-        # self.pup.b = self.p.vdd
-
-        # self.ndn.g = self.inp
-        # self.ndn.d = self.out
-        # self.ndn.s = self.p.gnd
-        # self.ndn.b = self.p.gnd
-        
-        #pdn = self.inp & self.inp
-        #pup = ~self.inp & ~self.inp
-        #self.stack = self.make_stacks(output=self.out, pdn=pdn, pup=pup, power=self.p)
-
-        self.finalize()
-
-    async def sim(self):
-        while True:
-            val = await self.inp.recv()
-            await self.out.send(1-val)
 class Nor2(Module):
     a = InputPorts(width=2)
     b = OutputPort()
@@ -117,15 +57,11 @@ class Celement2(Module):
     o = OutputPort()
     p = SupplyPort()
 
-    def __init__(self, name='',  **kwargs):
-        super().__init__(name, **kwargs)
-        self.current_val = 0
-
     def build(self):
         p = self.p
         # Let's constnnruct this using combination feedback
         pdn = self.i[0] & self.i[1]
-        pup = ~self.i[0] | ~self.i[1]
+        pup = ~self.i[0] & ~self.i[1]
 
         self.inv = Inv(out = self.o, p = p)
         _o = self.inv.inp
@@ -139,6 +75,7 @@ class Celement2(Module):
         self.finalize()
 
     async def sim(self):
+        self.current_val = 0
         while True:
             #val = await self.i[0].recv()
             val = []
@@ -146,7 +83,7 @@ class Celement2(Module):
                 val.append(await self.i[i].recv())
             if val[0] == val[1]:
                 self.current_val = val[0]
-            await self.out.send(current_val)
+            await self.out.send(self.current_val)
 
 class Wchb(Module):
     l = E1of2InputPort()

@@ -1,8 +1,10 @@
 # QDI Buffer - A More complicated example
 
+## Introduction
 In this example we will generate an asynchronous circuit built using pipelined 
 4-phase handshake circuits that are quasi-delay-insensitive (QDI).
 
+### Communication protocol
 In our example, two buffers communicating a 1-bit data value using a 4-phase handshake
 will use a bundle of three wires consisting of:
 
@@ -29,7 +31,7 @@ sequenceDiagram
     BUF2 -->> BUF1: Raise e wire
     Note right of BUF1: Back at initial state with t,f low and e high
 ```
-## Circuit implementation of a Buffer
+### Circuit implementation of a Buffer
 We will use a simple implementation of a weak-conditioned-half-buffer(WCHB)
 handshake circuit to implement BUF1, shown in the schematic below.  The circle
 with a 'C' represents a [Muller Consensus or
@@ -38,87 +40,89 @@ sets its output value to the input value when both inputs are the same.
 
 ![wchb](wchb.png)
 
-### Generating values
-We'll first change the `Main` module from using a clock as the input
-to the inverter, to a digital source that can provide a pre-determined
-sequence of values.  This ['VerilogSrc'][circuitbrew.elements.VerilogSrc] is
-shown below:
+## Building blocks
+First, let's take a look at how we build the individual gates in the WCHB 
+schematic.
 
-``` py linenums="1" title='inverter_sim_01.py'
---8<--- "circuitbrew/examples/inverter_sim/inverter_sim_01.py"
+### Parametrized Inverter
+Although we saw a simple [inverter](inverter.md) previously, this
+time we're going to show you how to build a parametrized inverter based on its
+sizes and vt choices.  This is built in to the standard [gates][circuitbrew.gates]
+library, but let's take a look at the implementation:
+
+``` py linenums="1" title='wchb_inverter.py'
+--8<--- "circuitbrew/examples/wchb/wchb_inverter_01.py"
 ```
 
-The source module can take a list of values that it loops through and repeats during
-simulation.  In this example, we generate a vector of 10 1-bit values to source.
+Adding parameters to a Module is done in the following way:
 
-The waveform of this simulation is below.  The top waveform is the source clock, and then below 
-is the input and output of the inverter.
+- Add each parameter as a type annotation ([Param][circuitbrew.module.Param])
+- Use the parameters as a regular Python attribute in your `build` method
 
-![Waveform](inv_sim.png)
+When you want to use the parametrized Module, you call `Parametrize` on the 
+Module you want with the parameter values, which will return a new Module (class)
+that you can then instance.  If you don't want to keep around the parametrized
+class for more instances, you could also simply do:
 
-### Checking the values
-Checking the expected values can be done using a ['VerilogBucket'][circuitbrew.elementes.VerilogBucket].
-We provide the expected values list to the bucket by inverting the randomly generated
-list supplied to the `VerilogSrc`:
-
-``` py linenums="1" title='inverter_sim_02.py'
---8<--- "circuitbrew/examples/inverter_sim/inverter_sim_02.py"
-```
-
-If you then look at the Verilog-A output file (`top.valog` if you're using hspice), you will
-see the following output:
+``` py
+    self.inv = Parameterize(Inv, p_strength=3, n_strength=3, vt='svt')()
 
 ```
-At time  1.78 ns verified 0th value 0 to test.dat
-At time  5.11 ns verified 1th value 1 to test.dat
-At time  8.44 ns verified 2th value 1 to test.dat
-At time 11.78 ns verified 3th value 1 to test.dat
-At time 15.11 ns verified 4th value 1 to test.dat
-At time 18.44 ns verified 5th value 0 to test.dat
-At time 21.78 ns verified 6th value 1 to test.dat
-At time 25.11 ns verified 7th value 1 to test.dat
-At time 28.44 ns verified 8th value 0 to test.dat
+
+### Parametrized NOR
+Now let's take a look at a different use for parameters: Specifying the width of
+a port. 
+
+We've already seen how to do a [2-input NOR](nor2.md), but
+what if we want to build a generic N-input NOR?  Well, we need to first declare
+N as a Param.  But how do we pass this into the InputPorts as the width, since it
+hasn't been defined yet?  The way we do this is by using [Param][circuitbrew.module.Param]
+as a placeholder function with the name of the parameter:
+
+``` py linenums="1" title='wchb_nor2_01.py'
+--8<--- "circuitbrew/examples/wchb/wchb_nor2_01.py"
 ```
 
+Once [Parameterize][circuitbrew.module.Parameterize] is called with the actual value for `N`,
+it will resolve itself when `a` is accessed for the first time.  The rest of the implementation
+of NorN just needs to use `self.N` in an appropriate way to build the circuit like so:
 
-## Using model simulation to generate expected vectors
-While providing the expected values for a simple test case like this is trivial, the
-real power of CircuitBrew lies in the ability to generate expected vectors from complex
-circuits that instance multiple blocks.
 
-To do this, CircuitBrew has a simple yet powerful discrete-event-simulation framework built in to it.
-If you provide a method to implement a simulation model for each Module, then it
-will execute the complete system model for your circuit instanced in `Main` and
-generate the output values for each port.  Assuming your model is correct, then
-you can seamlessly use these output values as the expected values provided to
-the HSPICE simulation.
-
-For this particular example, we only need to provide a simulation model for the inverter, via an
-async `sim` method.
-
-``` py linenums="1" title='inverter_sim_03.py' hl_lines='19-22 45'
---8<--- "circuitbrew/examples/inverter_sim/inverter_sim_03.py"
+``` py linenums="1" title='wchb_nor2_02.py'
+--8<--- "circuitbrew/examples/wchb/wchb_nor2_02.py"
 ```
 
-While we'll delve into more detail on how model simulation works in a different
-section, in general, every port has a `recv` and `send` method.  In your `sim` method for
-each block all you need to do is:
+Here, you can see how we used the `|` and `&` operators in a loop to construct the
+CMOS stacks.
 
-- call `await self.INPUTPORT.recv()` to receive all the inputs to your port
-- compute the outputs based on the inputs
-- call `await self.OUTPUTPORT.send(output_val)` on all the output ports to send the computed values
-- repeat 
+The resulting SPICE looks like 
 
-We have to use the Python `async` keywords because the simulation methods relies on 
-concurrent event-based simulation libraries for execution of the sim code.  Under the hood,
-CircuitBrew currently uses the [Curio async library](https://curio.readthedocs.io/en/latest/), 
-although this may change in future iterations.
+```spice
+.subckt Main 
+xNorN_N_3_size_2_inst_0 a_0 a_1 a_2 b_3 p_4 p_5 NorN_N_3_size_2
+.ends
 
-For every Module that doesn't provide a `sim` method, CircuitBrew will execute the default
-behavior which is to forward all values received on an InputPort to its fanout connections
-transparently.
 
-If you execute this example, it will run the same way in HSPICE as the last example, except
-you don't generate and provide expected vectors in the `Main` method.
+.subckt NorN_N_3_size_2 a[0] a[1] a[2] b p.gnd p.vdd
+xmn0 b a[1] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=2 l=0.5
+xmn1 b a[0] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=2 l=0.5
+xmn2 b a[2] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=2 l=0.5
+xmp0 d_0 a[0] b p.vdd sky130_fd_pr__pfet_01v8_lvt w=2 l=0.5
+xmp1 d_1 a[1] d_0 p.vdd sky130_fd_pr__pfet_01v8_lvt w=2 l=0.5
+xmp2 p.vdd a[2] d_1 p.vdd sky130_fd_pr__pfet_01v8_lvt w=2 l=0.5
+.ends
+```
 
-In the next example, we will take a look at a more complicated example.
+Notice that the parameterized Nor sub-circuit has its parameter values
+inserted into the name.  If another Nor is parameterized (say with N=4),
+then it will have a different sub-circuit definition with `N_4` in the name.
+
+### C-element
+The c-element will be a state-holding gate, with the pull-up and pull-down
+both just having the two terms in series.  We will use combinational
+feedback to maintain the output when the inputs disagree in value.
+
+
+``` py linenums="1" title='wchb_c2_01.py' 
+--8<--- "circuitbrew/examples/wchb/wchb_c2_01.py"
+```

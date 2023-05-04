@@ -39,8 +39,13 @@ Fet:
 
 ```
 This tech file is loaded at start up and stored in every `Module` instance as a dict: 
-`self.sim_setup`. 
+`self.sim_setup`. In addition, everything is accessible inside your SPICE template
+file, so if you wanted to add a configuration setting/value pair into your SPICE
+file, you could just add it to the top-level of the `tech.yml` file.  Then, 
+write it into your `sw130.sp` file with Jinja syntax (e.g. `${new_option}`)
 
+The keys that are named after Module names are meant to provide a way to get 
+configuration settings to specific classes.
 Anything that is under the `auto` key is automatically set as a member attributes for
 the matching class's objects.  For example, every `Fet` module object
 automatically has the `l`, `w`, `vt`, and `width_id` member attributes set.
@@ -52,5 +57,5 @@ So, doing the following will create a Fet with width 2.0 while keeping the lengt
     self.mynfet = Nfet(w=3)
 ```
 
-Make sure you follow the class hierarchy in the `tech.yaml` file if you want the attributes
-to apply properly.
+Make sure you **follow the class hierarchy** in the `tech.yaml` file if you want the
+attributes to apply properly.

@@ -1,5 +1,6 @@
 import curio
 import inspect
+import sys
 from collections import Counter
 import logging
 
@@ -177,7 +178,12 @@ class Module:
         #cls.template = kwargs
         super().__init_subclass__(**kwargs)
          
-    def make_stacks(self, output, pdn, pup, power):
+    def make_stacks(self, output, pdn: Stack, pup: Stack, 
+                    power: 'SupplyPort', width=None) -> list['Fet']:
+        """ Given two stacks (constructed manually or via logical operators on
+            Ports), construct the CMOS gate based on the pullup and pulldown
+            networks, and return a list of Fets.
+        """
         # Connect the output node
         assert isinstance(pdn, Stack), f'Pulldown {pdn} is not a stack'
         assert isinstance(pup, Stack), f'Pullup {pup} is not a stack'
@@ -193,6 +199,9 @@ class Module:
         fets += self._connect_stack(pdn, power)
         fets += self._connect_stack(pup, power)
 
+        if width:
+            for fet in fets:
+                fet.w = width
         return fets
         
     def _connect_all_to(self, port, connection):
@@ -267,12 +276,12 @@ def Param(name):
         return v
     return lookup
 
-def Parametrize(cls, **kwargs):
-    """Given Parametrize(cls, N=3, P=4), 
+def Parameterize(cls, **kwargs):
+    """Given Parameterize(cls, N=3, P=4), 
         it will return a new subclass of cls that has an __init__
         that sets instance vars N and P
 
-        e.g Parametrize(cls, N=3, P=4) is effectively returning the following:
+        e.g Parameterize(cls, N=3, P=4) is effectively returning the following:
 
             Class subcls_N_3_P_4(cls):
                 def __init__(self, *args, **kwargs):
@@ -281,14 +290,28 @@ def Parametrize(cls, **kwargs):
                     cls.__init__(self, *args, **kwargs)
 
     """
-    params_to_str = '_'.join([f'{name}_{val}' for name, val in kwargs.items()])
+    # Check to make sure every param in kwargs was defined as
+    # a class annotation of type Param. 
+    params = []
+    cls_annotations = cls.__annotations__
+    for name, val in kwargs.items():
+        assert name in cls_annotations,\
+                f'{name} is not defined as a parameter type annotation in {cls}'
+        assert cls_annotations[name] is Param, \
+                f'Annotation for {name} must be of type Param in {cls} to use as a parameter'
+        params.append(f'{name}_{val}')
+    params_to_str = '_'.join(params)
+
+    #params_to_str = '_'.join([f'{name}_{val}' for name, val in kwargs.items()])
 
     def init_fn(self, *a, **kw):
         for name, val in kwargs.items():
             setattr(self, name, val)
         cls.__init__(self, *a, **kw)
 
-    parametrized_class = type(f'{cls.__name__}_{params_to_str}', (cls,), 
+    #print (cls.__annotations__)
+    #sys.exit(0)
+    parameterized_class = type(f'{cls.__name__}_{params_to_str}', (cls,), 
                               { '__init__': init_fn })
 
-    return parametrized_class
+    return parameterized_class

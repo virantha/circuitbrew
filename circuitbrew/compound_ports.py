@@ -127,6 +127,54 @@ class CompoundPort(Port):
 
 class SupplyPort(CompoundPort):
     """Use this for passing around the vdd and gnd global ports
+
+        Attributes:
+            vdd (Port): + terminal
+            gnd (Port): - terminal    
     """
     vdd = Port()
     gnd = Port()
+
+
+class E1of2(CompoundPort):
+    """ A dual rail port with enable.
+
+        For simulation, we will do a quick hack to make sure
+        that we don't need to handle the data wires and enable individually.  The
+        async queues already give us all the back-pressure behavior we need.  We
+        will send the data value on the true rail only, and ignore the f and e
+        rails.
+
+        Attributes:
+            t (Port): True rail
+            f (Port): False rail
+            e (Port): Enable (active low acknowledge)
+    """
+    t = Port()
+    f = Port()
+    e = Port()
+
+# ----------------------------------------------------------------
+# Simulation related methods for E1of2
+# ----------------------------------------------------------------
+    async def send(self, val):
+        """ Just use the true rail for sending valuese for modelling
+        """
+        await self.t.send(val)
+
+    async def recv(self):
+        """ Just use the true rail for sending valuese for modelling
+        """
+        val = await self.t.recv()
+        logger.info(f'channel {self} received {val}')
+        return val
+
+class E1of2InputPort(E1of2):
+    """Input Dual-rail port
+    """
+    pass
+
+class E1of2OutputPort(E1of2):
+    """Output Dual-rail port
+    """
+    pass

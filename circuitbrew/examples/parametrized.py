@@ -7,6 +7,8 @@ from circuitbrew.fets import *
 
 
 class NorN(Module):
+    N: Param
+
     a = InputPorts(width=Param('N'))
     b = OutputPort()
     p = SupplyPort()
@@ -31,7 +33,7 @@ class Main(Module):
         self.supply = Supply('vdd', self.sim_setup['voltage'], )
         p = self.supply.p
 
-        self.nor3 = Parametrize(NorN, N=4)(p=p)
+        self.nor3 = Parameterize(NorN, N=4)(p=p)
         #self.inv = Inv('myinv', p=p)
         #inv_in = self.inv.inp
         #inv_out = self.inv.out

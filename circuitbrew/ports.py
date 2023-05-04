@@ -296,9 +296,13 @@ class Ports(MutableSequence, WithId):
         return False
 
 class InputPorts(Ports):
+    """Sequence (array) of InputPort
+    """
     port_type = InputPort
 
 class OutputPorts(Ports):
+    """Sequence (array) of OutputPort
+    """
     port_type = OutputPort
 
 
