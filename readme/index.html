@@ -21,6 +21,9 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/main.ded33207.min.css">
       
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
+      
       
 
     
@@ -58,11 +61,14 @@
             </style> <script src="../assets/javascripts/glightbox.min.js"></script></head>
   
   
-    <body dir="ltr">
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
   
     
-    
-      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -89,7 +95,7 @@
     <a href=".." title="CircuitBrew" class="md-header__button md-logo" aria-label="CircuitBrew" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 11h1.67c.41-1.17 1.52-2 2.83-2a3 3 0 0 1 3 3c0 .65-.21 1.25-.56 1.74l1.13 1.61L13.11 4l1.5 2.13 2.09 2.98.8-.11c1.31 0 2.42.83 2.83 2H22v2h-1.67a2.99 2.99 0 0 1-2.83 2 3 3 0 0 1-3-3c0-.65.21-1.25.56-1.74l-1.13-1.61L10.89 20 7.3 14.89A2.99 2.99 0 0 1 3.67 13H2v-2m15.5-.5A1.5 1.5 0 0 0 16 12a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 19 12a1.5 1.5 0 0 0-1.5-1.5m-11 0A1.5 1.5 0 0 0 5 12a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 8 12a1.5 1.5 0 0 0-1.5-1.5Z"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,6 +117,8 @@
         </div>
       </div>
     </div>
+    
+      
     
     
     
@@ -173,11 +181,15 @@
   
 
 
-  <li class="md-tabs__item">
-    <a href=".." class="md-tabs__link">
-      Home
-    </a>
-  </li>
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
 
       
         
@@ -189,7 +201,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../usage/generating/" class="md-tabs__link">
+      <a href="../usage/" class="md-tabs__link">
         Usage guide
       </a>
     </li>
@@ -242,7 +254,7 @@
     <a href=".." title="CircuitBrew" class="md-nav__button md-logo" aria-label="CircuitBrew" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 11h1.67c.41-1.17 1.52-2 2.83-2a3 3 0 0 1 3 3c0 .65-.21 1.25-.56 1.74l1.13 1.61L13.11 4l1.5 2.13 2.09 2.98.8-.11c1.31 0 2.42.83 2.83 2H22v2h-1.67a2.99 2.99 0 0 1-2.83 2 3 3 0 0 1-3-3c0-.65.21-1.25.56-1.74l-1.13-1.61L10.89 20 7.3 14.89A2.99 2.99 0 0 1 3.67 13H2v-2m15.5-.5A1.5 1.5 0 0 0 16 12a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 19 12a1.5 1.5 0 0 0-1.5-1.5m-11 0A1.5 1.5 0 0 0 5 12a1.5 1.5 0 0 0 1.5 1.5A1.5 1.5 0 0 0 8 12a1.5 1.5 0 0 0-1.5-1.5Z"/></svg>
 
     </a>
     CircuitBrew
@@ -269,10 +281,62 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+      
+      
+        
+          
+            
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="..">Home</a>
+          
+            <label for="__nav_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
-        Home
+      <a href="../contributing/" class="md-nav__link">
+        Contributing
       </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -295,11 +359,31 @@
       <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-          Usage guide
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../usage/">Usage guide</a>
+          
+            <label for="__nav_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
@@ -309,18 +393,6 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../usage/generating/" class="md-nav__link">
-        Generating netlists
-      </a>
-    </li>
-  
-
-            
           
             
               
@@ -328,8 +400,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/writing/" class="md-nav__link">
-        Writing circuits
+      <a href="../usage/generating/" class="md-nav__link">
+        Generating netlists
       </a>
     </li>
   
@@ -352,11 +424,31 @@
       <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
       
       
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
-        <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
-          Examples
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../usage/examples/">Examples</a>
+          
+            <label for="__nav_2_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
       
       <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3">
@@ -364,6 +456,8 @@
           Examples
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
           
             
               
@@ -479,6 +573,22 @@
       
       <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
       
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -721,9 +831,9 @@
 for arbitrarily complex transistor-based circuits directly in Python.  </p>
 <ul>
 <li>Free and open-source software: ASL2 license</li>
-<li>Blog: http://virantha.com/category/projects/circuitbrew</li>
-<li>Documentation: http://virantha.github.io/circuitbrew</li>
-<li>Source: https://github.com/virantha/circuitbrew</li>
+<li>Blog: <a href="http://virantha.com/category/projects/circuitbrew">http://virantha.com/category/projects/circuitbrew</a></li>
+<li>Documentation: <a href="http://virantha.github.io/circuitbrew">http://virantha.github.io/circuitbrew</a></li>
+<li>Source: <a href="https://github.com/virantha/circuitbrew">https://github.com/virantha/circuitbrew</a></li>
 </ul>
 <p>Some notable features of CircuitBrew over a schematic capture tool or a Domain
 Specific Language based circuit design tool:  </p>
@@ -900,7 +1010,7 @@ inside an analog hspice simulation.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.indexes"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.51198bba.min.js"></script>
