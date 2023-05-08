@@ -23,7 +23,7 @@ is the input and output of the inverter.
 ![Waveform](inv_sim.png)
 
 ### Checking the values
-Checking the expected values can be done using a ['VerilogBucket'][circuitbrew.elementes.VerilogBucket].
+Checking the expected values can be done using a ['VerilogBucket'][circuitbrew.elements.VerilogBucket].
 We provide the expected values list to the bucket by inverting the randomly generated
 list supplied to the `VerilogSrc`:
 

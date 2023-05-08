@@ -49,7 +49,7 @@ to instance attributes as `self.pup` and `self.ndn` (choose whatever names you w
 2. We connect the gate, drain, source, and bulk to the appropriate
 nodes. Note that all the ports are also available as instance attributes 
 3. The widths and lengths are whatever the defaults are in the
-[techfile](usage/techfiles.md).
+[techfile](../techfiles.md).
 4. We can create local vars to simplify long expressions names, for example, with the vdd and gnd connections.  
 5. It's also important to end every `build` method with the `self.finalize()` call.  An
 error will be thrown if you forget this.

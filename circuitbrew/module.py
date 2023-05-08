@@ -267,7 +267,9 @@ class Leaf(Module):
         """
         self.finalize_called = True
 
-class ParametrizedModule():
+class ParameterizedModule():
+    """ Specialize the name with an id
+    """
     def get_module_type_name(self):
         return f'{self.__class__.__name__}_{self._id}'
 

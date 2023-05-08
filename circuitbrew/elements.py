@@ -4,7 +4,7 @@ import curio
 from .measure import Power
 from .ports import *
 from .compound_ports import SupplyPort
-from .module import Leaf, Module, ParametrizedModule, SourceModule
+from .module import Leaf, Module, ParameterizedModule, SourceModule
 
 # The template files
 from mako.template import Template
@@ -127,7 +127,7 @@ class VerilogModule(Module):
         If you have a subclass that needs parameters (for example, a Source module might need
         to inject a series of different values into the templated verilog file, thereby creating a 
         different verilog file each time it's instanced), then you should use the 
-        [circuitbrew.elements.VerilogParametrizedModel][] below.
+        [circuitbrew.elements.VerilogParameterizedModule][] below.
         
     """
 
@@ -178,7 +178,7 @@ class VerilogModule(Module):
             super().get_spice() method.
 
             The parametrized modules are a notable exception to this.
-            See [circuitbrew.elements.VerilogParametrizedModule.get_spice][]
+            See [circuitbrew.elements.VerilogParameterizedModule.get_spice][]
         """
         simtype = self.sim_setup['sim_type']
         src_filename = self.src_filename[simtype]
@@ -215,8 +215,7 @@ class VerilogClock(VerilogModule):
         s = f'{s} freq={self.freq} offset={self.offset}'
         return s
 
-class VerilogParametrizedModule(ParametrizedModule, VerilogModule): 
-
+class VerilogParameterizedModule(ParameterizedModule, VerilogModule): 
     """ For any verilog-a/verilog module that we need to uniquify the template
         file.
     """
@@ -237,7 +236,7 @@ class VerilogParametrizedModule(ParametrizedModule, VerilogModule):
         l = [f'.hdl {output_filename}']
         return l
 
-class VerilogSrc(VerilogParametrizedModule, SourceModule):
+class VerilogSrc(VerilogParameterizedModule, SourceModule):
     """ A single-bit source module that takes a list of values and outputs
         them on every clock edge.
 
@@ -269,7 +268,7 @@ class VerilogSrc(VerilogParametrizedModule, SourceModule):
         for val in self.values:
             await self.d.send(val)
 
-class VerilogBucket(VerilogParametrizedModule):
+class VerilogBucket(VerilogParameterizedModule):
     """ A single-bit bucket module that sinks values on every clk edge and checks them 
         against the expected values.  If the user didn't specify the
         expected values, then the sim model method will provide the

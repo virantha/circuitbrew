@@ -38,6 +38,6 @@ Here, we define the pull-up and pull-down stacks following these rules:
 - All pull-down stacks (nfets) must have non-negated ports in the logical expression
 - All pull-up stacks (pfets) must have negated ports in the logical expression
 
-Finally, call [circuitbrew.module.make_stacks][] to construct the Fets and
+Finally, call [circuitbrew.module.Module.make_stacks][] to construct the Fets and
 return a list of the transistors.
 
