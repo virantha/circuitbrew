@@ -4,9 +4,9 @@ CircuitBrew provides a framework for building SPICE-based circuits and generatin
 for arbitrarily complex transistor-based circuits directly in Python.  
 
 * Free and open-source software: ASL2 license
-* Blog: http://virantha.com/category/projects/circuitbrew
-* Documentation: http://virantha.github.io/circuitbrew
-* Source: https://github.com/virantha/circuitbrew
+* Blog: <http://virantha.com/category/projects/circuitbrew>
+* Documentation: <http://virantha.github.io/circuitbrew>
+* Source: <https://github.com/virantha/circuitbrew>
 
 Some notable features of CircuitBrew over a schematic capture tool or a Domain
 Specific Language based circuit design tool:  

@@ -2,13 +2,17 @@ site_name: CircuitBrew
 repo_url: https://github.com/virantha/CircuitBrew
 theme:
   name: "material"
-
+  icon: 
+    logo: material/resistor-nodes
   features:
     - navigation.path
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.expand
+    - navigation.indexes
 
+  palette:
+    primary: teal
 plugins:
   - search
   - autorefs
@@ -38,10 +42,15 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:  
   - Home: index.md
   - Usage guide:
+      - usage/index.md
       - 'Generating netlists': usage/generating.md
       - 'Writing circuits': usage/writing.md
       - Examples:

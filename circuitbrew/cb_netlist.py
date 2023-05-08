@@ -20,11 +20,13 @@ Options:
     -d --debug                show even more information              
 
 """
-import circuitbrew.circuitbrew as cb
+import circuitbrew.circuitbrew
 import sys
+def main():
+    sys.path.append('.')
+    script = circuitbrew.circuitbrew.CircuitBrew(__doc__)
+    script.go(sys.argv[1:])
 
 if __name__=='__main__':
-    print(__doc__)
-    script = cb.CircuitBrew(__doc__)
-    script.go(sys.argv[1:])
+    main()
 

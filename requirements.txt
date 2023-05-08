@@ -1,4 +1,5 @@
-pyyaml>=3.1.0
+pyyaml>=6.0
 docopt-ng
 schema
 mako
+curio>=1.6

@@ -2,6 +2,8 @@
 *.swp
 *.bak
 .DS_STORE
+log
+first_setup.zsh
 
 htmlcov/
 

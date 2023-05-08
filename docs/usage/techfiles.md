@@ -12,7 +12,7 @@ like the following for Skywater:
                     tech.yml
 ```
 
-The `sw130.sp` file is the main SPICE template that's written using Jinja.  The process parameters are specified in
+The `sw130.sp` file is the main SPICE template that's written using Mako.  The process parameters are specified in
 `tech.yml`:
 
 ```yaml

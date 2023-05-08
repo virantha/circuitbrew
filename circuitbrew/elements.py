@@ -141,7 +141,7 @@ class VerilogModule(Module):
             Need to fix this to not use deprecated pkg_resources.
 
             Args:
-                src_filename: The template file (Jinja)
+                src_filename: The template file (Mako)
                 param_dict: The template variables to fill in 
                 out_filename: 
                     If you want to use a different name for the output template file.
