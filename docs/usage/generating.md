@@ -2,10 +2,17 @@
 # Generating netlists
 
 ## CLI 
-Use `cb_netlist.py` to generate a netlist from an example:
+Use `cb_netlist` to generate a netlist from an example:
 
 ``` 
-python cb_netlist.py sw130 circuitbrew.examples.inv hspice all
+cb_netlist sw130 circuitbrew.examples.inv hspice all
+```
+
+If your have your own file in a subdirectory `mine/logic.py` in your current
+working directory:
+
+``` 
+cb_netlist sw130 mine.logic hspice all
 ```
 
 The general arguments are:

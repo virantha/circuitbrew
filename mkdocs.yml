@@ -37,6 +37,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.details
+  - footnotes
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -48,12 +49,16 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:  
-  - Home: index.md
+  - Home: 
+      - index.md
+      - Contributing: contributing.md
+      - Authors: authors.md
+      - Changelog: changes.md
   - Usage guide:
       - usage/index.md
       - 'Generating netlists': usage/generating.md
-      - 'Writing circuits': usage/writing.md
       - Examples:
+          - usage/examples/index.md
           - Inverter: usage/examples/inverter.md
           - Inverter with Model: usage/examples/inverter_sim.md
           - Two-input NOR: usage/examples/nor2.md
