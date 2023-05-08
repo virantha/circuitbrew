@@ -1,5 +1,9 @@
+import logging
+
 from .symbols import SymbolTable
 from .ports import Port
+
+logger = logging.getLogger(__name__)
 
 class CompoundPort(Port):
     """ Aggregate different ports into one structure (like a struct) by subclassing this.

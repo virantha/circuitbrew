@@ -28,9 +28,11 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+  - admonition
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -47,6 +49,7 @@ nav:
           - Inverter with Model: usage/examples/inverter_sim.md
           - Two-input NOR: usage/examples/nor2.md
           - QDI Handshake circuit: usage/examples/wchb.md
+      - 'Reference': usage/reference.md
       - 'Techfiles': usage/techfiles.md
   - API: 
       - module: api/api_module.md

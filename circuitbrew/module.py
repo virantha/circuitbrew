@@ -17,10 +17,8 @@ class Module:
     def __init__(self, name='', **kwargs):
         self.finalize_called = False
 
-        n = Module.module_counts[self.__class__]
-        self._id = n
-        # Increment subclass count
-        Module.module_counts.update([self.__class__])
+        self.fet_count = Counter()
+        n = self._update_count()
 
         if name=='':
             name = f'{self.get_module_type_name()}_inst_{n}'
@@ -43,6 +41,15 @@ class Module:
         self.get_sim_setup(**kwargs)
 
         self.post_init()
+
+    def _update_count(self):
+
+        n = Module.module_counts[self.__class__]
+        self._id = n
+        # Increment subclass count
+        Module.module_counts.update([self.__class__])
+        return n
+
 
     def post_init(self): pass
 
@@ -247,6 +254,7 @@ class Leaf(Module):
         It will emit its own spice (for example a transistor), or emit an 
         measurement command.
     """
+     
     def build(self):
         """ Finalize this without adding any instances
         """

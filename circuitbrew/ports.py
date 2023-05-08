@@ -295,10 +295,31 @@ class Ports(MutableSequence, WithId):
     def is_flat(self):
         return False
 
+    async def recv(self):
+        """ Receive a list of values on each port
+
+            Returns:
+                received value
+        """
+        vals = []
+        for p in self.ports:
+            vals.append(await p.recv())
+        logger.info(f'Received {vals} on port {self.name}')
+        return vals
+
+    async def send(self, val: list):
+        """ Send list of values on list of ports
+        """
+        # Copy to all listeners in the q
+        for p, v in zip(self.ports, val):
+            # Copy v to every connection in p
+            await p.send(v)
+
 class InputPorts(Ports):
     """Sequence (array) of InputPort
     """
     port_type = InputPort
+
 
 class OutputPorts(Ports):
     """Sequence (array) of OutputPort

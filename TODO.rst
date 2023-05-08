@@ -1,5 +1,5 @@
 Todo list
 =========
 
-- Do more
-- Add more docstrings
+- Fix transistor numbering to be per module
+-  

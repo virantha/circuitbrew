@@ -18,9 +18,14 @@ class Fet(Leaf):
     s = Port()
     b = Port()
 
+
     def get_instance_spice(self, scope):
         connected = ' '.join(self._get_instance_ports(scope))
-        s = f'xm{self.inst_prefix}{self._id} {connected} {self.fet_type} {self.width_id}={self.w} l={self.l}'
+        # Use the parent module's fet_count for the id
+        cnt = scope.instance.fet_count[self.__class__]
+        #s = f'xm{self.inst_prefix}{self._id} {connected} {self.fet_type} {self.width_id}={self.w} l={self.l}'
+        s = f'xm{self.inst_prefix}{cnt} {connected} {self.fet_type} {self.width_id}={self.w} l={self.l}'
+        scope.instance.fet_count.update([self.__class__])
         return s
 
 class Nfet(Fet):

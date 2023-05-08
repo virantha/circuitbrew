@@ -47,7 +47,9 @@ schematic.
 ### Parametrized Inverter
 Although we saw a simple [inverter](inverter.md) previously, this
 time we're going to show you how to build a parametrized inverter based on its
-sizes and vt choices.  This is built in to the standard [gates][circuitbrew.gates]
+sizes and vt choices.  
+
+This inverter is built in to the standard [gates][circuitbrew.gates]
 library, but let's take a look at the implementation:
 
 ``` py linenums="1" title='wchb_inverter.py'
@@ -126,3 +128,128 @@ feedback to maintain the output when the inputs disagree in value.
 ``` py linenums="1" title='wchb_c2_01.py' 
 --8<--- "circuitbrew/examples/wchb/wchb_c2_01.py"
 ```
+
+## Putting it all together
+
+### Assembling the WCHB
+Let's construct the full WCHB circuit, with all of these building blocks.
+
+
+???+ note "wchb_01.py"
+
+    ``` py
+    --8<--- "circuitbrew/examples/wchb/wchb_01.py"
+    ```
+
+We have added a reset signal to the schematic, just to make sure this circuit resets 
+to a known state in the handshake.
+The simulation method is quite straightforward, since it's just a pipelined buffer.
+
+### Buffer chain
+For the SPICE simulation, we're going to build a parameterized chain of buffers.
+We will also use `src` and `bucket` modules that can drive `e1of2` ports.
+
+``` mermaid
+graph LR
+    src --> buf_0;
+    buf_0 --> buf_1;
+    buf_1 --> buf_2;
+    buf_2 --> buf_3;
+    buf_3 --> bucket;
+
+```
+
+???+ note "wchb_02.py"
+
+    ``` py
+    --8<--- "circuitbrew/examples/wchb/wchb_02.py"
+    ```
+
+It becomes quite simple to build complex SPICE structures in CircuitBrew with Python's
+powerful syntax; here, we're instantiating a chain of buffers in a `for` loop and
+connecting them in a generic way.
+
+The generated SPICE file is shown below:
+
+??? note "wchb_02.sp"
+
+    ``` spice
+    *
+    .option brief=1
+    .lib "/Users/virantha/dev/circuitbrew/skywater-pdk-libs-sky130_fd_pr/models/sky130.lib.spice" tt
+    .option brief=0
+    .option scale=1e-6
+    *---------------------------------------
+    .temp 85
+    .param voltage=1.8
+    .option post
+
+    .subckt Main 
+    Vpwlpreset _pR p.gnd PWL (0n 0 4n 0 4.5n 1.8)
+    Vpwlsreset _sR p.gnd PWL (0n 0 4n 0 4.5n 1.8)
+    xbuc _pR _sR r.t r.f r.e VerilogBucketE1of2_0
+    xwchb_0 _pR l.t l.f l.e p.vdd p.gnd r_0 r_1 r_2 Wchb
+    xwchb_1 _pR r_0 r_1 r_2 p.vdd p.gnd r_3 r_4 r_5 Wchb
+    xwchb_2 _pR r_3 r_4 r_5 p.vdd p.gnd r_6 r_7 r_8 Wchb
+    xwchb_3 _pR r_6 r_7 r_8 p.vdd p.gnd r.t r.f r.e Wchb
+    xsrc _pR _sR l.t l.f l.e VerilogSrcE1of2_0
+    xvdd p.vdd p.gnd Supply
+    .ends
+
+
+    .subckt Supply p.vdd p.gnd
+    .measure TRAN supplycurrent0 avg i(Vvdd_vdd)  
+    .measure TRAN supplypower0 PARAM='-supplycurrent0*1.8'
+    .measure TRAN supplypower_direct0 AVG P(Vvdd_vdd)  
+    Vvdd_vss p.gnd 0 0.0
+    Vvdd_vdd p.vdd 0 1.8
+    .ends
+
+    .subckt Wchb _pReset l.t l.f l.e p.vdd p.gnd r.t r.f r.e
+    xCelement2_inst_1 l.f r.e r.f p.vdd p.gnd Celement2
+    xCelement2_inst_0 l.t r.e r.t p.vdd p.gnd Celement2
+    xInv_p_strength_1_n_strength_1_vt_svt_inst_0 _pReset mypreset p.vdd p.gnd Inv_p_strength_1_n_strength_1_vt_svt
+    xNor3_inst_0 r.t r.f mypreset l.e p.vdd p.gnd Nor3
+    .ends
+
+    .subckt Celement2 i[0] i[1] o p.vdd p.gnd
+    xmn0 t228_0 i[0] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmn1 _o i[1] t228_0 p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmp0 d_0 i[0] _o p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmp1 p.vdd i[1] d_0 p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmn2 t255_0 i[1] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmn3 d_1 i[0] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmn4 _o o t255_0 p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmp2 d_2 o _o p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmp3 d_3 i[0] d_2 p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmp4 p.vdd i[1] s_4 p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xInv_p_strength_1_n_strength_1_vt_svt_inst_1 _o o p.vdd p.gnd Inv_p_strength_1_n_strength_1_vt_svt
+    .ends
+
+    .subckt Inv_p_strength_1_n_strength_1_vt_svt inp out p.vdd p.gnd
+    xmn0 p.gnd inp out p.gnd sky130_fd_pr__nfet_01v8_lvt w=1 l=0.5
+    xmp0 p.vdd inp out p.vdd sky130_fd_pr__pfet_01v8_lvt w=1 l=0.5
+    .ends
+
+    .subckt Nor3 a[0] a[1] a[2] b p.vdd p.gnd
+    xmn0 b a[1] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmn1 b a[0] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmn2 b a[2] p.gnd p.gnd sky130_fd_pr__nfet_01v8_lvt w=1.0 l=0.5
+    xmp0 d_0 a[0] b p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmp1 d_1 a[1] d_0 p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    xmp2 p.vdd a[2] d_1 p.vdd sky130_fd_pr__pfet_01v8_lvt w=1.0 l=0.5
+    .ends
+
+    .hdl template_0_hspice_src_1of2.va
+    .hdl template_0_hspice_bucket_1of2.va
+
+    xmain Main
+
+    .tran 1p 10n
+
+    .end
+    ```
+
+The waveforms from the resulting simulation are shown below, with the `l.t` and `l.f` input
+rails and the shifted versions `r.t` and `r.f` at the end of the chain of buffers.
+![SPICE](wchb_chain.png)

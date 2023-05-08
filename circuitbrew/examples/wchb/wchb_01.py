@@ -1,47 +1,30 @@
 from random import randint
-from circuitbrew.module import Module
-from circuitbrew.ports import InputPort, OutputPort
-from circuitbrew.compound_ports import SupplyPort
-from circuitbrew.fets import Nfet, Pfet
-from circuitbrew.elements import Supply, VerilogClock, VerilogSrc, VerilogBucket
+from circuitbrew.module import Module, Parameterize
+from circuitbrew.ports import InputPort
+from circuitbrew.compound_ports import SupplyPort, E1of2InputPort, E1of2OutputPort
+from circuitbrew.gates import NorN
+from circuitbrew.gates import Inv_x1 as Inv
 
-class Inverter(Module):
-    a = InputPort()
-    b = OutputPort()
+from circuitbrew.qdi import Celement2
+
+class Wchb(Module):
+    l = E1of2InputPort()
+    r = E1of2OutputPort()
+    _pReset = InputPort()
     p = SupplyPort()
 
     def build(self):
-        vdd, gnd = self.p.vdd, self.p.gnd
-        self.pup = Pfet(g=self.a, d=vdd, s=self.b, b=vdd)
-        self.ndn = Nfet(g=self.a, d=self.b, s=gnd, b=gnd)
+
+        self.c2_t = Celement2(i=[self.l.t, self.r.e], o = self.r.t, p=self.p)
+        self.c2_f = Celement2(i=[self.l.f, self.r.e], o = self.r.f, p=self.p)
+        self.inv_mypreset = Inv(inp=self._pReset, p=self.p)
+        mypreset = self.inv_mypreset.out
+
+        self.nor = Parameterize(NorN, N=3)(a=[self.r.t, self.r.f, mypreset], 
+                                           b=self.l.e, p=self.p)
         self.finalize()
 
     async def sim(self):
         while True:
-            val = await self.a.recv()
-            await self.b.send(1-val)
-
-class Main(Module):
-
-    def build(self):
-        # Voltage supply
-        self.supply = Supply(name='vdd', voltage=self.sim_setup['voltage'])
-        p = self.supply.p
-        vdd, gnd = p.vdd, p.gnd
-        
-        # Change the clock to drive the VerilogSrc instead of the Inverter
-        self.clk_gen = VerilogClock('clk', freq=300e3, enable=vdd)
-
-        # Sequence of input test vectors on output node 'd'
-        vals = [randint(0,1) for i in range(10)]
-        self.src = VerilogSrc('src', values=vals,
-                              clk=self.clk_gen.clk, _reset=vdd)
-        inv_in = self.src.d
-        self.inv = Inverter('myinv', a=inv_in, p=p)
-        
-        # A sampling clock for checking expected output of the inverter
-        self.clk_buc = VerilogClock('clk_buc', freq=300e3, offset='100p', enable=vdd)
-
-        self.bucket = VerilogBucket(name='buc', # values=expected, no longer needed 
-                                    clk=self.clk_buc.clk, _reset=vdd, d=self.inv.b)
-        self.finalize()
+            val = await self.l.recv()
+            await self.r.send(val)
