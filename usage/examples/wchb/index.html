@@ -1,0 +1,1382 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../nor2/">
+      
+      
+        <link rel="next" href="../../reference/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.8">
+    
+    
+      
+        <title>QDI Handshake circuit - CircuitBrew</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ded33207.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+        html.glightbox-open { overflow: initial; height: 100%; }
+        .gslide-title { margin-top: 0px; user-select: text; }
+        .gslide-desc { color: #666; user-select: text; }
+        .gslide-image img { background: white; }
+        
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}
+            </style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#qdi-buffer-a-more-complicated-example" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="CircuitBrew" class="md-header__button md-logo" aria-label="CircuitBrew" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CircuitBrew
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              QDI Handshake circuit
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/virantha/CircuitBrew" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../generating/" class="md-tabs__link md-tabs__link--active">
+        Usage guide
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../api/api_module/" class="md-tabs__link">
+        API
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="CircuitBrew" class="md-nav__button md-logo" aria-label="CircuitBrew" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    CircuitBrew
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/virantha/CircuitBrew" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          Usage guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Usage guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generating/" class="md-nav__link">
+        Generating netlists
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../writing/" class="md-nav__link">
+        Writing circuits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inverter/" class="md-nav__link">
+        Inverter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../inverter_sim/" class="md-nav__link">
+        Inverter with Model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nor2/" class="md-nav__link">
+        Two-input NOR
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          QDI Handshake circuit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        QDI Handshake circuit
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#communication-protocol" class="md-nav__link">
+    Communication protocol
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuit-implementation-of-a-buffer" class="md-nav__link">
+    Circuit implementation of a Buffer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-blocks" class="md-nav__link">
+    Building blocks
+  </a>
+  
+    <nav class="md-nav" aria-label="Building blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parametrized-inverter" class="md-nav__link">
+    Parametrized Inverter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parametrized-nor" class="md-nav__link">
+    Parametrized NOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-element" class="md-nav__link">
+    C-element
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-all-together" class="md-nav__link">
+    Putting it all together
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting it all together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assembling-the-wchb" class="md-nav__link">
+    Assembling the WCHB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buffer-chain" class="md-nav__link">
+    Buffer chain
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        Reference
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../techfiles/" class="md-nav__link">
+        Techfiles
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_module/" class="md-nav__link">
+        module
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_ports/" class="md-nav__link">
+        ports
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_compound_ports/" class="md-nav__link">
+        compound_ports
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_fets/" class="md-nav__link">
+        fets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_gates/" class="md-nav__link">
+        gates
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/api_qdi/" class="md-nav__link">
+        qdi
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#communication-protocol" class="md-nav__link">
+    Communication protocol
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuit-implementation-of-a-buffer" class="md-nav__link">
+    Circuit implementation of a Buffer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-blocks" class="md-nav__link">
+    Building blocks
+  </a>
+  
+    <nav class="md-nav" aria-label="Building blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parametrized-inverter" class="md-nav__link">
+    Parametrized Inverter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parametrized-nor" class="md-nav__link">
+    Parametrized NOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-element" class="md-nav__link">
+    C-element
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-all-together" class="md-nav__link">
+    Putting it all together
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting it all together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assembling-the-wchb" class="md-nav__link">
+    Assembling the WCHB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buffer-chain" class="md-nav__link">
+    Buffer chain
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="qdi-buffer-a-more-complicated-example">QDI Buffer - A More complicated example</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this example we will generate an asynchronous circuit built using pipelined 
+4-phase handshake circuits that are quasi-delay-insensitive (QDI).</p>
+<h3 id="communication-protocol">Communication protocol</h3>
+<p>In our example, two buffers communicating a 1-bit data value using a 4-phase handshake
+will use a bundle of three wires consisting of:</p>
+<ul>
+<li>two data rails (a true and false rail) </li>
+<li>an acknowledge (or enable) wire</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+BUF1-- t --&gt; BUF2
+BUF1-- f --&gt; BUF2
+BUF2-- e --&gt; BUF1</code></pre>
+<p>We will use return-to-zero signaling on the data wires. So, for example,
+to send a value of <code>1</code> from BUF1 to BUF2, we would do the following:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant BUF1
+    Note right of BUF1: Reset with t,f low and e high
+    BUF1 -&gt;&gt; BUF2: Raise t wire
+    BUF2 --&gt;&gt; BUF1: Lower e wire
+    BUF1 -&gt;&gt; BUF2: Lower t wire
+    BUF2 --&gt;&gt; BUF1: Raise e wire
+    Note right of BUF1: Back at initial state with t,f low and e high</code></pre>
+<h3 id="circuit-implementation-of-a-buffer">Circuit implementation of a Buffer</h3>
+<p>We will use a simple implementation of a weak-conditioned-half-buffer(WCHB)
+handshake circuit to implement BUF1, shown in the schematic below.  The circle
+with a 'C' represents a <a href="https://en.wikipedia.org/wiki/C-element">Muller Consensus or
+C-element</a> which is a dynamic gate that
+sets its output value to the input value when both inputs are the same.  </p>
+<p><a class="glightbox" href="../wchb.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="wchb" src="../wchb.png" /></a></p>
+<h2 id="building-blocks">Building blocks</h2>
+<p>First, let's take a look at how we build the individual gates in the WCHB 
+schematic.</p>
+<h3 id="parametrized-inverter">Parametrized Inverter</h3>
+<p>Although we saw a simple <a href="../inverter/">inverter</a> previously, this
+time we're going to show you how to build a parametrized inverter based on its
+sizes and vt choices.  </p>
+<p>This inverter is built in to the standard <a class="autorefs autorefs-internal" href="../../../api/api_gates/#circuitbrew.gates">gates</a>
+library, but let's take a look at the implementation:</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">wchb_inverter.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">circuitbrew.compound_ports</span> <span class="kn">import</span> <span class="n">SupplyPort</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">circuitbrew.ports</span> <span class="kn">import</span> <span class="n">InputPort</span><span class="p">,</span> <span class="n">OutputPort</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">circuitbrew.fets</span> <span class="kn">import</span> <span class="n">Nfet</span><span class="p">,</span> <span class="n">Pfet</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span> <span class="nn">circuitbrew.module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Parameterize</span><span class="p">,</span> <span class="n">Param</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">class</span> <span class="nc">Inv</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="n">inp</span> <span class="o">=</span> <span class="n">InputPort</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">OutputPort</span><span class="p">()</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">SupplyPort</span><span class="p">()</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>    <span class="n">n_strength</span> <span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="n">p_strength</span> <span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="n">vt</span>         <span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">pup</span> <span class="o">=</span> <span class="n">Pfet</span><span class="p">(</span><span class="n">w</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p_strength</span><span class="p">,</span> <span class="n">vt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vt</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>                        <span class="n">g</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">vdd</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">vdd</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ndn</span> <span class="o">=</span> <span class="n">Nfet</span><span class="p">(</span><span class="n">w</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_strength</span><span class="p">,</span> <span class="n">vt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vt</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a>                        <span class="n">g</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">gnd</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">gnd</span><span class="p">)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a>            <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">inp</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a>            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">val</span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="k">class</span> <span class="nc">Main</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="n">Inv_x3</span> <span class="o">=</span> <span class="n">Parameterize</span><span class="p">(</span><span class="n">Inv</span><span class="p">,</span> <span class="n">p_strength</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_strength</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">vt</span><span class="o">=</span><span class="s1">&#39;svt&#39;</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inv</span> <span class="o">=</span> <span class="n">Inv_x3</span><span class="p">()</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Adding parameters to a Module is done in the following way:</p>
+<ul>
+<li>Add each parameter as a type annotation (<a class="autorefs autorefs-internal" href="../../../api/api_module/#circuitbrew.module.Param">Param</a>)</li>
+<li>Use the parameters as a regular Python attribute in your <code>build</code> method</li>
+</ul>
+<p>When you want to use the parametrized Module, you call <code>Parametrize</code> on the 
+Module you want with the parameter values, which will return a new Module (class)
+that you can then instance.  If you don't want to keep around the parametrized
+class for more instances, you could also simply do:</p>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">inv</span> <span class="o">=</span> <span class="n">Parameterize</span><span class="p">(</span><span class="n">Inv</span><span class="p">,</span> <span class="n">p_strength</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_strength</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">vt</span><span class="o">=</span><span class="s1">&#39;svt&#39;</span><span class="p">)()</span>
+</span></code></pre></div>
+<h3 id="parametrized-nor">Parametrized NOR</h3>
+<p>Now let's take a look at a different use for parameters: Specifying the width of
+a port. </p>
+<p>We've already seen how to do a <a href="../nor2/">2-input NOR</a>, but
+what if we want to build a generic N-input NOR?  Well, we need to first declare
+N as a Param.  But how do we pass this into the InputPorts as the width, since it
+hasn't been defined yet?  The way we do this is by using <a class="autorefs autorefs-internal" href="../../../api/api_module/#circuitbrew.module.Param">Param</a>
+as a placeholder function with the name of the parameter:</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">wchb_nor2_01.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">class</span> <span class="nc">NorN</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">N</span><span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">InputPorts</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">Param</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">))</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="n">b</span> <span class="o">=</span> <span class="n">OutputPort</span><span class="p">()</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">SupplyPort</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Once <a class="autorefs autorefs-internal" href="../../../api/api_module/#circuitbrew.module.Parameterize">Parameterize</a> is called with the actual value for <code>N</code>,
+it will resolve itself when <code>a</code> is accessed for the first time.  The rest of the implementation
+of NorN just needs to use <code>self.N</code> in an appropriate way to build the circuit like so:</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">wchb_nor2_02.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span>
+<span class="normal"><a href="#__codelineno-3-26">26</a></span>
+<span class="normal"><a href="#__codelineno-3-27">27</a></span>
+<span class="normal"><a href="#__codelineno-3-28">28</a></span>
+<span class="normal"><a href="#__codelineno-3-29">29</a></span>
+<span class="normal"><a href="#__codelineno-3-30">30</a></span>
+<span class="normal"><a href="#__codelineno-3-31">31</a></span>
+<span class="normal"><a href="#__codelineno-3-32">32</a></span>
+<span class="normal"><a href="#__codelineno-3-33">33</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">circuitbrew.compound_ports</span> <span class="kn">import</span> <span class="n">SupplyPort</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">circuitbrew.ports</span> <span class="kn">import</span> <span class="n">InputPorts</span><span class="p">,</span> <span class="n">OutputPort</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">circuitbrew.module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Parameterize</span><span class="p">,</span> <span class="n">Param</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="k">class</span> <span class="nc">NorN</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">N</span><span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">size</span><span class="p">:</span> <span class="n">Param</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">InputPorts</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">Param</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">))</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="n">b</span> <span class="o">=</span> <span class="n">OutputPort</span><span class="p">()</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">SupplyPort</span><span class="p">()</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="n">pdn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a>        <span class="n">pup</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21"></a>             <span class="n">pdn</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22"></a>             <span class="n">pup</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23"></a>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_stacks</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> 
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25"></a>                                    <span class="n">pdn</span><span class="o">=</span><span class="n">pdn</span><span class="p">,</span> <span class="n">pup</span><span class="o">=</span><span class="n">pup</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26"></a>                                    <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28"></a>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29"></a><span class="k">class</span> <span class="nc">Main</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31"></a>        <span class="n">Nor3</span> <span class="o">=</span> <span class="n">Parameterize</span><span class="p">(</span><span class="n">NorN</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nor3</span> <span class="o">=</span> <span class="n">Nor3</span><span class="p">()</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Here, you can see how we used the <code>|</code> and <code>&amp;</code> operators in a loop to construct the
+CMOS stacks.</p>
+<p>The resulting SPICE looks like </p>
+<div class="language-spice highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Main</span><span class="w"> </span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nx">xNorN_N_3_size_2_inst_0</span><span class="w"> </span><span class="nx">a_0</span><span class="w"> </span><span class="nx">a_1</span><span class="w"> </span><span class="nx">a_2</span><span class="w"> </span><span class="nx">b_3</span><span class="w"> </span><span class="nx">p_4</span><span class="w"> </span><span class="nx">p_5</span><span class="w"> </span><span class="nx">NorN_N_3_size_2</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">NorN_N_3_size_2</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="nx">xmn0</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nx">xmn1</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="nx">xmn2</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="nx">xmp0</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="nx">xmp1</span><span class="w"> </span><span class="nx">d_1</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nx">xmp2</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="nx">d_1</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">2</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="p">.</span><span class="nx">ends</span>
+</span></code></pre></div>
+<p>Notice that the parameterized Nor sub-circuit has its parameter values
+inserted into the name.  If another Nor is parameterized (say with N=4),
+then it will have a different sub-circuit definition with <code>N_4</code> in the name.</p>
+<h3 id="c-element">C-element</h3>
+<p>The c-element will be a state-holding gate, with the pull-up and pull-down
+both just having the two terms in series.  We will use combinational
+feedback to maintain the output when the inputs disagree in value.</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">wchb_c2_01.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span>
+<span class="normal"><a href="#__codelineno-5-13">13</a></span>
+<span class="normal"><a href="#__codelineno-5-14">14</a></span>
+<span class="normal"><a href="#__codelineno-5-15">15</a></span>
+<span class="normal"><a href="#__codelineno-5-16">16</a></span>
+<span class="normal"><a href="#__codelineno-5-17">17</a></span>
+<span class="normal"><a href="#__codelineno-5-18">18</a></span>
+<span class="normal"><a href="#__codelineno-5-19">19</a></span>
+<span class="normal"><a href="#__codelineno-5-20">20</a></span>
+<span class="normal"><a href="#__codelineno-5-21">21</a></span>
+<span class="normal"><a href="#__codelineno-5-22">22</a></span>
+<span class="normal"><a href="#__codelineno-5-23">23</a></span>
+<span class="normal"><a href="#__codelineno-5-24">24</a></span>
+<span class="normal"><a href="#__codelineno-5-25">25</a></span>
+<span class="normal"><a href="#__codelineno-5-26">26</a></span>
+<span class="normal"><a href="#__codelineno-5-27">27</a></span>
+<span class="normal"><a href="#__codelineno-5-28">28</a></span>
+<span class="normal"><a href="#__codelineno-5-29">29</a></span>
+<span class="normal"><a href="#__codelineno-5-30">30</a></span>
+<span class="normal"><a href="#__codelineno-5-31">31</a></span>
+<span class="normal"><a href="#__codelineno-5-32">32</a></span>
+<span class="normal"><a href="#__codelineno-5-33">33</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">circuitbrew.compound_ports</span> <span class="kn">import</span> <span class="n">SupplyPort</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">circuitbrew.ports</span> <span class="kn">import</span> <span class="n">InputPorts</span><span class="p">,</span> <span class="n">OutputPort</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="kn">from</span> <span class="nn">circuitbrew.module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Parameterize</span><span class="p">,</span> <span class="n">Param</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="kn">from</span> <span class="nn">.wchb_inverter_01</span> <span class="kn">import</span> <span class="n">Inv</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="k">class</span> <span class="nc">Celement2</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">i</span> <span class="o">=</span> <span class="n">InputPorts</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">o</span> <span class="o">=</span> <span class="n">OutputPort</span><span class="p">()</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">SupplyPort</span><span class="p">()</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13"></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14"></a>        <span class="c1"># Let&#39;s constnnruct this using combination feedback</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15"></a>        <span class="n">pdn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16"></a>        <span class="n">pup</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17"></a>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inv</span> <span class="o">=</span> <span class="n">Parameterize</span><span class="p">(</span><span class="n">Inv</span><span class="p">,</span> <span class="n">n_strength</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">p_strength</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">vt</span><span class="o">=</span><span class="s1">&#39;lvt&#39;</span><span class="p">)(</span><span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">)</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19"></a>        <span class="n">_o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inv</span><span class="o">.</span><span class="n">inp</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20"></a>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21"></a>        <span class="n">cf_pdn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22"></a>        <span class="n">cf_pup</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">o</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">celem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_stacks</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">_o</span><span class="p">,</span> <span class="n">pdn</span><span class="o">=</span><span class="n">pdn</span><span class="p">,</span> <span class="n">pup</span><span class="o">=</span><span class="n">pup</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cf</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_stacks</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">_o</span><span class="p">,</span> <span class="n">pdn</span><span class="o">=</span><span class="n">cf_pdn</span><span class="p">,</span> <span class="n">pup</span><span class="o">=</span><span class="n">cf_pup</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26"></a>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28"></a>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29"></a>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="k">class</span> <span class="nc">Main</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">c2</span> <span class="o">=</span> <span class="n">Celement2</span><span class="p">()</span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<h2 id="putting-it-all-together">Putting it all together</h2>
+<h3 id="assembling-the-wchb">Assembling the WCHB</h3>
+<p>Let's construct the full WCHB circuit, with all of these building blocks.</p>
+<details class="note" open="open">
+<summary>wchb_01.py</summary>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span> <span class="nn">circuitbrew.module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Parameterize</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">circuitbrew.ports</span> <span class="kn">import</span> <span class="n">InputPort</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">from</span> <span class="nn">circuitbrew.compound_ports</span> <span class="kn">import</span> <span class="n">SupplyPort</span><span class="p">,</span> <span class="n">E1of2InputPort</span><span class="p">,</span> <span class="n">E1of2OutputPort</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kn">from</span> <span class="nn">circuitbrew.gates</span> <span class="kn">import</span> <span class="n">NorN</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kn">from</span> <span class="nn">circuitbrew.gates</span> <span class="kn">import</span> <span class="n">Inv_x1</span> <span class="k">as</span> <span class="n">Inv</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kn">from</span> <span class="nn">circuitbrew.qdi</span> <span class="kn">import</span> <span class="n">Celement2</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="k">class</span> <span class="nc">Wchb</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">l</span> <span class="o">=</span> <span class="n">E1of2InputPort</span><span class="p">()</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">E1of2OutputPort</span><span class="p">()</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">_pReset</span> <span class="o">=</span> <span class="n">InputPort</span><span class="p">()</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">SupplyPort</span><span class="p">()</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">c2_t</span> <span class="o">=</span> <span class="n">Celement2</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">e</span><span class="p">],</span> <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">c2_f</span> <span class="o">=</span> <span class="n">Celement2</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">e</span><span class="p">],</span> <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inv_mypreset</span> <span class="o">=</span> <span class="n">Inv</span><span class="p">(</span><span class="n">inp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pReset</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>        <span class="n">mypreset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inv_mypreset</span><span class="o">.</span><span class="n">out</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nor</span> <span class="o">=</span> <span class="n">Parameterize</span><span class="p">(</span><span class="n">NorN</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">3</span><span class="p">)(</span><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">mypreset</span><span class="p">],</span> 
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>                                           <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>            <span class="n">val</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span></code></pre></div>
+</details>
+<p>We have added a reset signal to the schematic, just to make sure this circuit resets 
+to a known state in the handshake.
+The simulation method is quite straightforward, since it's just a pipelined buffer.</p>
+<h3 id="buffer-chain">Buffer chain</h3>
+<p>For the SPICE simulation, we're going to build a parameterized chain of buffers.
+We will also use <code>src</code> and <code>bucket</code> modules that can drive <code>e1of2</code> ports.</p>
+<pre class="mermaid"><code>graph LR
+    src --&gt; buf_0;
+    buf_0 --&gt; buf_1;
+    buf_1 --&gt; buf_2;
+    buf_2 --&gt; buf_3;
+    buf_3 --&gt; bucket;
+</code></pre>
+<details class="note" open="open">
+<summary>wchb_02.py</summary>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span> <span class="nn">circuitbrew.module</span> <span class="kn">import</span> <span class="n">Module</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="kn">from</span> <span class="nn">circuitbrew.elements</span> <span class="kn">import</span> <span class="n">Supply</span><span class="p">,</span> <span class="n">ResetPulse</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">from</span> <span class="nn">circuitbrew.qdi</span> <span class="kn">import</span> <span class="n">Wchb</span><span class="p">,</span> <span class="n">VerilogBucketE1of2</span><span class="p">,</span> <span class="n">VerilogSrcE1of2</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">class</span> <span class="nc">Main</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">supply</span> <span class="o">=</span> <span class="n">Supply</span><span class="p">(</span><span class="s1">&#39;vdd&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_setup</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">],</span> 
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>                             <span class="n">measure</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply</span><span class="o">.</span><span class="n">p</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supply</span><span class="o">.</span><span class="n">p</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_preset_pulse</span> <span class="o">=</span> <span class="n">ResetPulse</span><span class="p">(</span><span class="s1">&#39;preset&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_sreset_pulse</span> <span class="o">=</span> <span class="n">ResetPulse</span><span class="p">(</span><span class="s1">&#39;sreset&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="n">_pR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preset_pulse</span><span class="o">.</span><span class="n">node</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>        <span class="c1"># Set up a chain of wchbs</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="p">[</span> <span class="n">Wchb</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;wchb_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">_pReset</span><span class="o">=</span><span class="n">_pR</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>                    <span class="p">]</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>        <span class="c1"># Connect the wchbs</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">r</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>        <span class="n">_sR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sreset_pulse</span><span class="o">.</span><span class="n">node</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>        <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">l</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">r</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">VerilogSrcE1of2</span><span class="p">(</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>            <span class="n">_pReset</span><span class="o">=</span><span class="n">_pR</span><span class="p">,</span> <span class="n">_sReset</span><span class="o">=</span> <span class="n">_sR</span><span class="p">)</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">l</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">buc</span> <span class="o">=</span> <span class="n">VerilogBucketE1of2</span><span class="p">(</span>
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a>            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;buc&#39;</span><span class="p">,</span>
+</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a>            <span class="n">_pReset</span><span class="o">=</span><span class="n">_pR</span><span class="p">,</span> <span class="n">_sReset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sreset_pulse</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a>
+</span><span id="__span-7-40"><a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+</span></code></pre></div>
+</details>
+<p>It becomes quite simple to build complex SPICE structures in CircuitBrew with Python's
+powerful syntax; here, we're instantiating a chain of buffers in a <code>for</code> loop and
+connecting them in a generic way.</p>
+<p>The generated SPICE file is shown below:</p>
+<details class="note">
+<summary>wchb_02.sp</summary>
+<div class="language-spice highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="o">*</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">.</span><span class="nx">option</span><span class="w"> </span><span class="nx">brief</span><span class="p">=</span><span class="mi">1</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">.</span><span class="nx">lib</span><span class="w"> </span><span class="s">&quot;/Users/virantha/dev/circuitbrew/skywater-pdk-libs-sky130_fd_pr/models/sky130.lib.spice&quot;</span><span class="w"> </span><span class="nx">tt</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">.</span><span class="nx">option</span><span class="w"> </span><span class="nx">brief</span><span class="p">=</span><span class="mi">0</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">.</span><span class="nx">option</span><span class="w"> </span><span class="nx">scale</span><span class="p">=</span><span class="mi">1</span><span class="nx">e</span><span class="o">-</span><span class="mi">6</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="o">*---------------------------------------</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">.</span><span class="nx">temp</span><span class="w"> </span><span class="mi">85</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">.</span><span class="nx">param</span><span class="w"> </span><span class="nx">voltage</span><span class="p">=</span><span class="m m-Double">1.8</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">.</span><span class="nx">option</span><span class="w"> </span><span class="nx">post</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Main</span><span class="w"> </span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="nx">Vpwlpreset</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">PWL</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="nx">n</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">4</span><span class="nx">n</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="m m-Double">4.5</span><span class="nx">n</span><span class="w"> </span><span class="m m-Double">1.8</span><span class="p">)</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="nx">Vpwlsreset</span><span class="w"> </span><span class="nx">_sR</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">PWL</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="nx">n</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">4</span><span class="nx">n</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="m m-Double">4.5</span><span class="nx">n</span><span class="w"> </span><span class="m m-Double">1.8</span><span class="p">)</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="nx">xbuc</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">_sR</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="nx">VerilogBucketE1of2_0</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="nx">xwchb_0</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">r_0</span><span class="w"> </span><span class="nx">r_1</span><span class="w"> </span><span class="nx">r_2</span><span class="w"> </span><span class="nx">Wchb</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="nx">xwchb_1</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">r_0</span><span class="w"> </span><span class="nx">r_1</span><span class="w"> </span><span class="nx">r_2</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">r_3</span><span class="w"> </span><span class="nx">r_4</span><span class="w"> </span><span class="nx">r_5</span><span class="w"> </span><span class="nx">Wchb</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="nx">xwchb_2</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">r_3</span><span class="w"> </span><span class="nx">r_4</span><span class="w"> </span><span class="nx">r_5</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">r_6</span><span class="w"> </span><span class="nx">r_7</span><span class="w"> </span><span class="nx">r_8</span><span class="w"> </span><span class="nx">Wchb</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="nx">xwchb_3</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">r_6</span><span class="w"> </span><span class="nx">r_7</span><span class="w"> </span><span class="nx">r_8</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="nx">Wchb</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="nx">xsrc</span><span class="w"> </span><span class="nx">_pR</span><span class="w"> </span><span class="nx">_sR</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="nx">VerilogSrcE1of2_0</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="nx">xvdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Supply</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Supply</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="p">.</span><span class="nx">measure</span><span class="w"> </span><span class="nx">TRAN</span><span class="w"> </span><span class="nx">supplycurrent0</span><span class="w"> </span><span class="nx">avg</span><span class="w"> </span><span class="nx">i</span><span class="p">(</span><span class="nx">Vvdd_vdd</span><span class="p">)</span><span class="w">  </span>
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="p">.</span><span class="nx">measure</span><span class="w"> </span><span class="nx">TRAN</span><span class="w"> </span><span class="nx">supplypower0</span><span class="w"> </span><span class="nx">PARAM</span><span class="p">=</span><span class="err">&#39;</span><span class="o">-</span><span class="nx">supplycurrent0</span><span class="o">*</span><span class="m m-Double">1.8</span><span class="err">&#39;</span>
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="p">.</span><span class="nx">measure</span><span class="w"> </span><span class="nx">TRAN</span><span class="w"> </span><span class="nx">supplypower_direct0</span><span class="w"> </span><span class="nx">AVG</span><span class="w"> </span><span class="nx">P</span><span class="p">(</span><span class="nx">Vvdd_vdd</span><span class="p">)</span><span class="w">  </span>
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="nx">Vvdd_vss</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="m m-Double">0.0</span>
+</span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="nx">Vvdd_vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="m m-Double">1.8</span>
+</span><span id="__span-8-30"><a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-31"><a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>
+</span><span id="__span-8-32"><a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Wchb</span><span class="w"> </span><span class="nx">_pReset</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">e</span>
+</span><span id="__span-8-33"><a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="nx">xCelement2_inst_1</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Celement2</span>
+</span><span id="__span-8-34"><a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a><span class="nx">xCelement2_inst_0</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Celement2</span>
+</span><span id="__span-8-35"><a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a><span class="nx">xInv_p_strength_1_n_strength_1_vt_svt_inst_0</span><span class="w"> </span><span class="nx">_pReset</span><span class="w"> </span><span class="nx">mypreset</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Inv_p_strength_1_n_strength_1_vt_svt</span>
+</span><span id="__span-8-36"><a id="__codelineno-8-36" name="__codelineno-8-36" href="#__codelineno-8-36"></a><span class="nx">xNor3_inst_0</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">t</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="kd">f</span><span class="w"> </span><span class="nx">mypreset</span><span class="w"> </span><span class="nx">l</span><span class="p">.</span><span class="nx">e</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Nor3</span>
+</span><span id="__span-8-37"><a id="__codelineno-8-37" name="__codelineno-8-37" href="#__codelineno-8-37"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-38"><a id="__codelineno-8-38" name="__codelineno-8-38" href="#__codelineno-8-38"></a>
+</span><span id="__span-8-39"><a id="__codelineno-8-39" name="__codelineno-8-39" href="#__codelineno-8-39"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Celement2</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span>
+</span><span id="__span-8-40"><a id="__codelineno-8-40" name="__codelineno-8-40" href="#__codelineno-8-40"></a><span class="nx">xmn0</span><span class="w"> </span><span class="nx">t228_0</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-41"><a id="__codelineno-8-41" name="__codelineno-8-41" href="#__codelineno-8-41"></a><span class="nx">xmn1</span><span class="w"> </span><span class="nx">_o</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">t228_0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-42"><a id="__codelineno-8-42" name="__codelineno-8-42" href="#__codelineno-8-42"></a><span class="nx">xmp0</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">_o</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-43"><a id="__codelineno-8-43" name="__codelineno-8-43" href="#__codelineno-8-43"></a><span class="nx">xmp1</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-44"><a id="__codelineno-8-44" name="__codelineno-8-44" href="#__codelineno-8-44"></a><span class="nx">xmn2</span><span class="w"> </span><span class="nx">t255_0</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-45"><a id="__codelineno-8-45" name="__codelineno-8-45" href="#__codelineno-8-45"></a><span class="nx">xmn3</span><span class="w"> </span><span class="nx">d_1</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-46"><a id="__codelineno-8-46" name="__codelineno-8-46" href="#__codelineno-8-46"></a><span class="nx">xmn4</span><span class="w"> </span><span class="nx">_o</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="nx">t255_0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-47"><a id="__codelineno-8-47" name="__codelineno-8-47" href="#__codelineno-8-47"></a><span class="nx">xmp2</span><span class="w"> </span><span class="nx">d_2</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="nx">_o</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-48"><a id="__codelineno-8-48" name="__codelineno-8-48" href="#__codelineno-8-48"></a><span class="nx">xmp3</span><span class="w"> </span><span class="nx">d_3</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">d_2</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-49"><a id="__codelineno-8-49" name="__codelineno-8-49" href="#__codelineno-8-49"></a><span class="nx">xmp4</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">s_4</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-50"><a id="__codelineno-8-50" name="__codelineno-8-50" href="#__codelineno-8-50"></a><span class="nx">xInv_p_strength_1_n_strength_1_vt_svt_inst_1</span><span class="w"> </span><span class="nx">_o</span><span class="w"> </span><span class="nx">o</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">Inv_p_strength_1_n_strength_1_vt_svt</span>
+</span><span id="__span-8-51"><a id="__codelineno-8-51" name="__codelineno-8-51" href="#__codelineno-8-51"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-52"><a id="__codelineno-8-52" name="__codelineno-8-52" href="#__codelineno-8-52"></a>
+</span><span id="__span-8-53"><a id="__codelineno-8-53" name="__codelineno-8-53" href="#__codelineno-8-53"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Inv_p_strength_1_n_strength_1_vt_svt</span><span class="w"> </span><span class="nx">inp</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span>
+</span><span id="__span-8-54"><a id="__codelineno-8-54" name="__codelineno-8-54" href="#__codelineno-8-54"></a><span class="nx">xmn0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">inp</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">1</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-55"><a id="__codelineno-8-55" name="__codelineno-8-55" href="#__codelineno-8-55"></a><span class="nx">xmp0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">inp</span><span class="w"> </span><span class="nx">out</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="mi">1</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-56"><a id="__codelineno-8-56" name="__codelineno-8-56" href="#__codelineno-8-56"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-57"><a id="__codelineno-8-57" name="__codelineno-8-57" href="#__codelineno-8-57"></a>
+</span><span id="__span-8-58"><a id="__codelineno-8-58" name="__codelineno-8-58" href="#__codelineno-8-58"></a><span class="p">.</span><span class="nx">subckt</span><span class="w"> </span><span class="nx">Nor3</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span>
+</span><span id="__span-8-59"><a id="__codelineno-8-59" name="__codelineno-8-59" href="#__codelineno-8-59"></a><span class="nx">xmn0</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-60"><a id="__codelineno-8-60" name="__codelineno-8-60" href="#__codelineno-8-60"></a><span class="nx">xmn1</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-61"><a id="__codelineno-8-61" name="__codelineno-8-61" href="#__codelineno-8-61"></a><span class="nx">xmn2</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">gnd</span><span class="w"> </span><span class="nx">sky130_fd_pr__nfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-62"><a id="__codelineno-8-62" name="__codelineno-8-62" href="#__codelineno-8-62"></a><span class="nx">xmp0</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-63"><a id="__codelineno-8-63" name="__codelineno-8-63" href="#__codelineno-8-63"></a><span class="nx">xmp1</span><span class="w"> </span><span class="nx">d_1</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="nx">d_0</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-64"><a id="__codelineno-8-64" name="__codelineno-8-64" href="#__codelineno-8-64"></a><span class="nx">xmp2</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="nx">d_1</span><span class="w"> </span><span class="kd">p</span><span class="p">.</span><span class="nx">vdd</span><span class="w"> </span><span class="nx">sky130_fd_pr__pfet_01v8_lvt</span><span class="w"> </span><span class="nx">w</span><span class="p">=</span><span class="m m-Double">1.0</span><span class="w"> </span><span class="nx">l</span><span class="p">=</span><span class="m m-Double">0.5</span>
+</span><span id="__span-8-65"><a id="__codelineno-8-65" name="__codelineno-8-65" href="#__codelineno-8-65"></a><span class="p">.</span><span class="nx">ends</span>
+</span><span id="__span-8-66"><a id="__codelineno-8-66" name="__codelineno-8-66" href="#__codelineno-8-66"></a>
+</span><span id="__span-8-67"><a id="__codelineno-8-67" name="__codelineno-8-67" href="#__codelineno-8-67"></a><span class="p">.</span><span class="nx">hdl</span><span class="w"> </span><span class="nx">template_0_hspice_src_1of2</span><span class="p">.</span><span class="nx">va</span>
+</span><span id="__span-8-68"><a id="__codelineno-8-68" name="__codelineno-8-68" href="#__codelineno-8-68"></a><span class="p">.</span><span class="nx">hdl</span><span class="w"> </span><span class="nx">template_0_hspice_bucket_1of2</span><span class="p">.</span><span class="nx">va</span>
+</span><span id="__span-8-69"><a id="__codelineno-8-69" name="__codelineno-8-69" href="#__codelineno-8-69"></a>
+</span><span id="__span-8-70"><a id="__codelineno-8-70" name="__codelineno-8-70" href="#__codelineno-8-70"></a><span class="nx">xmain</span><span class="w"> </span><span class="nx">Main</span>
+</span><span id="__span-8-71"><a id="__codelineno-8-71" name="__codelineno-8-71" href="#__codelineno-8-71"></a>
+</span><span id="__span-8-72"><a id="__codelineno-8-72" name="__codelineno-8-72" href="#__codelineno-8-72"></a><span class="p">.</span><span class="nx">tran</span><span class="w"> </span><span class="mi">1</span><span class="kd">p</span><span class="w"> </span><span class="mi">10</span><span class="nx">n</span>
+</span><span id="__span-8-73"><a id="__codelineno-8-73" name="__codelineno-8-73" href="#__codelineno-8-73"></a>
+</span><span id="__span-8-74"><a id="__codelineno-8-74" name="__codelineno-8-74" href="#__codelineno-8-74"></a><span class="p">.</span><span class="nx">end</span>
+</span></code></pre></div>
+</details>
+<p>The waveforms from the resulting simulation are shown below, with the <code>l.t</code> and <code>l.f</code> input
+rails and the shifted versions <code>r.t</code> and <code>r.f</code> at the end of the chain of buffers.
+<a class="glightbox" href="../wchb_chain.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="SPICE" src="../wchb_chain.png" /></a></p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.51198bba.min.js"></script>
+      
+    
+  <script>document$.subscribe(() => {const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});})</script></body>
+</html>
